@@ -67,7 +67,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -164,7 +163,7 @@ fun AiRoute(
         }
     }
     LaunchedEffect(viewModel) {
-        viewModel.errorEventFlow.collect {
+        viewModel.messageEventFlow.collect {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
     }
@@ -196,7 +195,8 @@ fun AiRoute(
         onGoogleResultClicked = remember(viewModel) { viewModel::onGoogleResultClicked },
         onShareTextClicked = remember(viewModel) { viewModel::onShareTextClicked },
         onCopyTextClicked = remember(viewModel) { viewModel::onCopyTextClicked },
-        onCreateAnkiCardClicked = remember(viewModel) { viewModel::onCreateAnkiCardClicked }
+        onCreateAnkiCardClicked = remember(viewModel) { viewModel::onCreateAnkiCardClicked },
+        onSaveAsCardClicked = remember(viewModel) { viewModel::onSaveAsCardClicked }
     )
 }
 
@@ -220,7 +220,8 @@ private fun AiScreen(
     onGoogleResultClicked: () -> Unit,
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
-    onCreateAnkiCardClicked: () -> Unit
+    onCreateAnkiCardClicked: () -> Unit,
+    onSaveAsCardClicked: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
@@ -267,7 +268,8 @@ private fun AiScreen(
             onGoogleResultClicked = onGoogleResultClicked,
             onShareTextClicked = onShareTextClicked,
             onCopyTextClicked = onCopyTextClicked,
-            onCreateAnkiCardClicked = onCreateAnkiCardClicked
+            onCreateAnkiCardClicked = onCreateAnkiCardClicked,
+            onSaveAsCardClicked = onSaveAsCardClicked
         )
     }
 }
@@ -289,7 +291,8 @@ private fun AskAiCard(
     onGoogleResultClicked: () -> Unit,
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
-    onCreateAnkiCardClicked: () -> Unit
+    onCreateAnkiCardClicked: () -> Unit,
+    onSaveAsCardClicked: () -> Unit
 ) {
     when (uiMode) {
         is UiMode.Answer -> AnswerMode(
@@ -299,7 +302,8 @@ private fun AskAiCard(
             onGoogleResultClicked = onGoogleResultClicked,
             onShareTextClicked = onShareTextClicked,
             onCopyTextClicked = onCopyTextClicked,
-            onCreateAnkiCardClicked = onCreateAnkiCardClicked
+            onCreateAnkiCardClicked = onCreateAnkiCardClicked,
+            onSaveAsCardClicked = onSaveAsCardClicked
         )
 
         is UiMode.Ask -> AskMode(
@@ -431,7 +435,8 @@ private fun AnswerMode(
     onGoogleResultClicked: () -> Unit,
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
-    onCreateAnkiCardClicked: () -> Unit
+    onCreateAnkiCardClicked: () -> Unit,
+    onSaveAsCardClicked: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -500,7 +505,8 @@ private fun AnswerMode(
             onGoogleResultClicked = onGoogleResultClicked,
             onShareTextClicked = onShareTextClicked,
             onCopyTextClicked = onCopyTextClicked,
-            onCreateAnkiCardClicked = onCreateAnkiCardClicked
+            onCreateAnkiCardClicked = onCreateAnkiCardClicked,
+            onSaveAsCardClicked = onSaveAsCardClicked
         )
 
         BottomBarTools(
@@ -523,7 +529,8 @@ private fun AnswerOptions(
     onGoogleResultClicked: () -> Unit,
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
-    onCreateAnkiCardClicked: () -> Unit
+    onCreateAnkiCardClicked: () -> Unit,
+    onSaveAsCardClicked: () -> Unit
 ) {
     LazyRow(
         modifier,
@@ -589,6 +596,23 @@ private fun AnswerOptions(
                     modifier = Modifier.padding(margin4),
                     painter = painterResource(R.drawable.ic_anki_logo),
                     contentDescription = stringResource(R.string.content_description_anki)
+                )
+            }
+        }
+
+        item {
+            Spacer(Modifier.size(margin12))
+        }
+
+        item {
+            IconButton(
+                modifier = Modifier.requiredSize(answerOptionItemSize),
+                onClick = onSaveAsCardClicked
+            ) {
+                Image(
+                    modifier = Modifier.padding(margin4),
+                    painter = painterResource(R.drawable.baseline_save_24),
+                    contentDescription = stringResource(R.string.content_save_as_temporary_card)
                 )
             }
         }
@@ -1012,6 +1036,7 @@ private fun AiScreenPreview() {
         onGoogleResultClicked = {},
         onShareTextClicked = {},
         onCopyTextClicked = {},
-        onCreateAnkiCardClicked = {}
+        onCreateAnkiCardClicked = {},
+        onSaveAsCardClicked = {}
     )
 }

@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baset.anki.pro.generator.R
 import com.baset.anki.pro.generator.common.Constants
+import com.baset.anki.pro.generator.domain.CardRepository
 import com.baset.anki.pro.generator.domain.PreferenceRepository
+import com.baset.anki.pro.generator.domain.entity.Card
 import com.baset.anki.pro.generator.presentation.ui.ai.model.PickedMedia
 import com.baset.anki.pro.generator.presentation.ui.ai.model.TextType
 import com.baset.anki.pro.generator.presentation.ui.ai.model.UiMode
@@ -45,7 +47,8 @@ class AiViewModel(
     networkMonitor: NetworkMonitor,
     private val uriConverter: UriConverter,
     private val intentResolver: IntentResolver,
-    private val clipboardManager: ClipboardManager
+    private val clipboardManager: ClipboardManager,
+    private val cardRepository: CardRepository
 ) : ViewModel() {
     private val headlineTitle: UiText = UiText.StringResource(
         R.string.title_what_would_you_like_to_ask,
@@ -60,8 +63,8 @@ class AiViewModel(
     private val commandTextState = TextFieldState()
     private val answerTextState = RichTextState()
 
-    private val errorEventChannel = Channel<String>(Channel.BUFFERED)
-    val errorEventFlow = errorEventChannel.receiveAsFlow()
+    private val messageEventChannel = Channel<String>(Channel.BUFFERED)
+    val messageEventFlow = messageEventChannel.receiveAsFlow()
 
     private val pickedImageState = MutableStateFlow<PickedMedia?>(null)
     private val makeFullScreenState = MutableStateFlow(false)
@@ -225,11 +228,11 @@ class AiViewModel(
 
     fun onSendCommandClicked() {
         if (networkState.value != NetworkMonitor.State.Available) {
-            errorEventChannel.trySend(resourceProvider.getString(R.string.error_check_network))
+            messageEventChannel.trySend(resourceProvider.getString(R.string.error_check_network))
             return
         }
         val generativeModel = generativeModelState.value ?: run {
-            errorEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
+            messageEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
             return
         }
         uiModeState.value = UiMode.Loading
@@ -298,6 +301,20 @@ class AiViewModel(
             commandTextState.text.toString(),
             textToShare(TextType.HTML)
         )
+    }
+
+    fun onSaveAsCardClicked() {
+        viewModelScope.launch {
+            cardRepository.insertCard(
+                Card(
+                    front = commandTextState.text.toString(),
+                    back = answerTextState.toMarkdown()
+                )
+            )
+            messageEventChannel.trySend(
+                resourceProvider.getString(R.string.message_save_accomplished)
+            )
+        }
     }
 
     data class UiState(

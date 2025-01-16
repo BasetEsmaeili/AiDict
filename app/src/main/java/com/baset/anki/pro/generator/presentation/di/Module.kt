@@ -10,7 +10,6 @@ import com.baset.anki.pro.generator.presentation.util.ResourceProvider
 import com.baset.anki.pro.generator.presentation.util.UriConverter
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.lazyModule
 
 val presentationModule = lazyModule {
@@ -30,6 +29,7 @@ val presentationModule = lazyModule {
             get(),
             get(),
             IntentResolver(activity),
+            get(),
             get()
         )
     }
