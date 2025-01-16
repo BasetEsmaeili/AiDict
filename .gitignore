@@ -53,6 +53,7 @@ lint-results.txt
 *.kotlin_metadata
 *.kotlin_module
 *.java_metadata
+.kotlin/
 
 # IntelliJ IDEA-specific files
 .idea/workspace.xml
