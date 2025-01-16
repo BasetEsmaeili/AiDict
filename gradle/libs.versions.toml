@@ -1,0 +1,69 @@
+[versions]
+agp = "8.7.3"
+appcompatVersion = "1.7.0"
+coilComposeVersion = "3.0.4"
+coreSplashscreen = "1.0.1"
+datastorePreferencesVersion = "1.1.1"
+koinAndroidxComposeVersion = "4.1.0-Beta1"
+kotlin = "2.0.20"
+coreKtx = "1.15.0"
+kotlinxCollectionsImmutable = "0.3.6"
+kotlinxCoroutinesAndroid = "1.10.1"
+activityCompose = "1.9.3"
+composeBom = "2024.12.01"
+generativeai = "0.9.0"
+googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
+lifecycle_version = "2.9.0-alpha08"
+richeditorComposeVersion = "1.0.0-rc10"
+work_version = "2.10.0"
+activity_version = "1.10.0-rc01"
+fragment_version = "1.8.5"
+constraint_layout = "1.1.0"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
+generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroidxComposeVersion" }
+koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koinAndroidxComposeVersion" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidxComposeVersion" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxComposeVersion" }
+koin-compose-navigation = { module = "io.insert-koin:koin-androidx-compose-navigation", version.ref = "koinAndroidxComposeVersion" }
+koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koinAndroidxComposeVersion" }
+koin-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koinAndroidxComposeVersion" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle_version" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle_version" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraint_layout" }
+androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle_version" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle_version" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle_version" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle_version" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle_version" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle_version" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "work_version" }
+androidx-work-gcm = { module = "androidx.work:work-gcm", version.ref = "work_version" }
+androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity_version" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment_version" }
+androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragment_version" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+richeditor-compose = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "richeditorComposeVersion" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }
+
