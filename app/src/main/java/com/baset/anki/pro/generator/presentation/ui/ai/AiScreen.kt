@@ -7,8 +7,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,11 +53,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -77,6 +82,9 @@ import com.baset.anki.pro.generator.presentation.ui.ai.model.PickedMedia
 import com.baset.anki.pro.generator.presentation.ui.ai.model.UiMode
 import com.baset.anki.pro.generator.presentation.ui.core.modifier.animatedGradient
 import com.baset.anki.pro.generator.presentation.ui.core.modifier.conditional
+import com.baset.anki.pro.generator.presentation.ui.core.theme.AskBorderRadius
+import com.baset.anki.pro.generator.presentation.ui.core.theme.DisabledBlackItemBackgroundColor
+import com.baset.anki.pro.generator.presentation.ui.core.theme.DisabledItemAlpha
 import com.baset.anki.pro.generator.presentation.ui.core.theme.GradientLoadingBackground
 import com.baset.anki.pro.generator.presentation.ui.core.theme.IconBackground
 import com.baset.anki.pro.generator.presentation.ui.core.theme.Purple80
@@ -196,7 +204,8 @@ fun AiRoute(
         onShareTextClicked = remember(viewModel) { viewModel::onShareTextClicked },
         onCopyTextClicked = remember(viewModel) { viewModel::onCopyTextClicked },
         onCreateAnkiCardClicked = remember(viewModel) { viewModel::onCreateAnkiCardClicked },
-        onSaveAsCardClicked = remember(viewModel) { viewModel::onSaveAsCardClicked }
+        onSaveAsCardClicked = remember(viewModel) { viewModel::onSaveAsCardClicked },
+        onAskAnotherQuestionClicked = remember(viewModel) { viewModel::onAskAnotherQuestionClicked }
     )
 }
 
@@ -221,7 +230,8 @@ private fun AiScreen(
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
     onCreateAnkiCardClicked: () -> Unit,
-    onSaveAsCardClicked: () -> Unit
+    onSaveAsCardClicked: () -> Unit,
+    onAskAnotherQuestionClicked: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
@@ -269,7 +279,8 @@ private fun AiScreen(
             onShareTextClicked = onShareTextClicked,
             onCopyTextClicked = onCopyTextClicked,
             onCreateAnkiCardClicked = onCreateAnkiCardClicked,
-            onSaveAsCardClicked = onSaveAsCardClicked
+            onSaveAsCardClicked = onSaveAsCardClicked,
+            onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
         )
     }
 }
@@ -292,7 +303,8 @@ private fun AskAiCard(
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
     onCreateAnkiCardClicked: () -> Unit,
-    onSaveAsCardClicked: () -> Unit
+    onSaveAsCardClicked: () -> Unit,
+    onAskAnotherQuestionClicked: () -> Unit
 ) {
     when (uiMode) {
         is UiMode.Answer -> AnswerMode(
@@ -303,7 +315,8 @@ private fun AskAiCard(
             onShareTextClicked = onShareTextClicked,
             onCopyTextClicked = onCopyTextClicked,
             onCreateAnkiCardClicked = onCreateAnkiCardClicked,
-            onSaveAsCardClicked = onSaveAsCardClicked
+            onSaveAsCardClicked = onSaveAsCardClicked,
+            onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
         )
 
         is UiMode.Ask -> AskMode(
@@ -436,7 +449,8 @@ private fun AnswerMode(
     onShareTextClicked: () -> Unit,
     onCopyTextClicked: () -> Unit,
     onCreateAnkiCardClicked: () -> Unit,
-    onSaveAsCardClicked: () -> Unit
+    onSaveAsCardClicked: () -> Unit,
+    onAskAnotherQuestionClicked: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     ConstraintLayout(
@@ -509,17 +523,61 @@ private fun AnswerMode(
             onSaveAsCardClicked = onSaveAsCardClicked
         )
 
-        BottomBarTools(
-            modifier = Modifier
-                .constrainAs(bottomBarRef) {
-                    width = Dimension.matchParent
-                    height = Dimension.wrapContent
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                },
-            disabled = true
+        AskAiBottomBar(
+            modifier = Modifier.constrainAs(bottomBarRef) {
+                width = Dimension.matchParent
+                height = Dimension.wrapContent
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+            },
+            onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
         )
+    }
+}
+
+@NonRestartableComposable
+@Composable
+private fun AskAiBottomBar(
+    modifier: Modifier = Modifier,
+    onAskAnotherQuestionClicked: () -> Unit
+) {
+    Row(modifier = modifier) {
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .border(
+                    border = BorderStroke(
+                        width = AskBorderRadius,
+                        color = DisabledBlackItemBackgroundColor
+                    ),
+                    shape = RoundedCornerShape(aiToolsCardRadius)
+                )
+                .padding(margin12)
+                .clickable(
+                    onClick = onAskAnotherQuestionClicked,
+                    indication = null,
+                    interactionSource = interactionSource
+                ),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Text(
+                modifier = Modifier.alpha(DisabledItemAlpha),
+                color = Color.Black,
+                text = stringResource(R.string.title_ask_ai)
+            )
+        }
+        Spacer(modifier = Modifier.size(margin8))
+        IconButton(
+            enabled = false,
+            onClick = {},
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_send_24),
+                contentDescription = stringResource(R.string.content_description_send_command)
+            )
+        }
     }
 }
 
@@ -707,6 +765,9 @@ private fun AskMode(
                 focusRequester.requestFocus()
                 softwareKeyboard?.show()
             }
+        }
+        LaunchedEffect(Unit) {
+            requestId = randomStringUUID()
         }
         val isSendEnabled by remember {
             derivedStateOf { commandTextState.text.isNotEmpty() }
@@ -1037,6 +1098,7 @@ private fun AiScreenPreview() {
         onShareTextClicked = {},
         onCopyTextClicked = {},
         onCreateAnkiCardClicked = {},
-        onSaveAsCardClicked = {}
+        onSaveAsCardClicked = {},
+        onAskAnotherQuestionClicked = {}
     )
 }

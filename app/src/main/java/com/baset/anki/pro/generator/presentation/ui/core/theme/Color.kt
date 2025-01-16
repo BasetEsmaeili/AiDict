@@ -14,3 +14,6 @@ val IconBackground = Color(0x80FFFFFF)
 val GradientLoadingBackground = Color(0x33D0BCFF)
 val SwipeDeleteBackground = Color(0xFFF44336)
 val SwipeShareBackground = Color(0xFF2196F3)
+val DisabledBlackItemBackgroundColor = Color(0x61000000)
+
+const val DisabledItemAlpha = 0.38f

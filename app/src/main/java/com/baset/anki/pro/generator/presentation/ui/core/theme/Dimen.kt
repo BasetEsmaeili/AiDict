@@ -53,6 +53,7 @@ val answerOptionItemSize = 26.dp
  * Radius
  */
 val appLogoBorderRadius = 2.dp
+val AskBorderRadius = 1.dp
 val askAiCardElevation = 8.dp
 val askAiCardRadius = 16.dp
 val aiToolsCardRadius = 32.dp

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -315,6 +316,13 @@ class AiViewModel(
                 resourceProvider.getString(R.string.message_save_accomplished)
             )
         }
+    }
+
+    fun onAskAnotherQuestionClicked() {
+        answerTextState.clear()
+        commandTextState.clearText()
+        pickedImageState.value = null
+        uiModeState.value = UiMode.Ask
     }
 
     data class UiState(
