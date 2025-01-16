@@ -49,6 +49,10 @@ object Constants {
         const val INCLUDE_GOOGLE_SEARCH = "include_google_search"
         val keyIncludeGoogleSearch = booleanPreferencesKey(INCLUDE_GOOGLE_SEARCH)
         const val INCLUDE_GOOGLE_SEARCH_DEFAULT = false
+
+        const val DELETE_AFTER_SHARE_TO_ANKI = "delete_after_share_to_anki"
+        val keyDeleteAfterShareToAnki = booleanPreferencesKey(DELETE_AFTER_SHARE_TO_ANKI)
+        const val DELETE_AFTER_SHARE_TO_ANKI_DEFAULT = true
     }
 
     object Database {

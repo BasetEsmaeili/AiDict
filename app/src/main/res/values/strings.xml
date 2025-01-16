@@ -39,4 +39,6 @@
     <string name="label_code_available_on">The project is open source, and the code available on:</string>
     <string name="github">Github</string>
     <string name="message_save_accomplished">Save accomplished.</string>
+    <string name="content_description_swipe_to_delete_card">Swipe to delete card.</string>
+    <string name="content_description_swipe_to_add_anki">Swipe to create a card in Anki.</string>
 </resources>

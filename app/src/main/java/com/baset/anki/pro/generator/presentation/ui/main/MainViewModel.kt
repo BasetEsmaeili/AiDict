@@ -4,20 +4,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baset.anki.pro.generator.R
 import com.baset.anki.pro.generator.common.Constants
+import com.baset.anki.pro.generator.domain.CardRepository
 import com.baset.anki.pro.generator.domain.PreferenceRepository
+import com.baset.anki.pro.generator.domain.entity.Card
 import com.baset.anki.pro.generator.presentation.ui.core.model.UiText
 import com.baset.anki.pro.generator.presentation.util.IntentResolver
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val preferenceRepository: PreferenceRepository,
-    private val intentResolver: IntentResolver
+    private val intentResolver: IntentResolver,
+    private val cardRepository: CardRepository
 ) : ViewModel() {
     val windowServiceEnabledPreferenceState = preferenceRepository.getPreference(
         Constants.PreferencesKey.keyWindowServiceEnabled,
@@ -73,11 +77,22 @@ class MainViewModel(
             PreferencesUiState()
         )
 
+    private val cardsState = cardRepository
+        .cardsFlow()
+        .map { it.toImmutableList() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(Constants.FLOW_TIMEOUT),
+            persistentListOf()
+        )
+
     val uiState = combine(
-        preferencesUiState
-    ) { preferencesUiStates ->
+        preferencesUiState,
+        cardsState
+    ) { preferencesUiStates, cards ->
         MainUiState(
-            preferencesUiState = preferencesUiStates[0]
+            cards = cards,
+            preferencesUiState = preferencesUiStates
         )
     }.stateIn(
         viewModelScope,
@@ -130,5 +145,29 @@ class MainViewModel(
 
     fun onOpenProjectOnGithubClicked() {
         intentResolver.openProjectOnGithub()
+    }
+
+    fun onSwipedToShareCardToAnki(card: Card): Boolean {
+        intentResolver.createAnkiCard(
+            card.front,
+            card.back
+        )
+        viewModelScope.launch {
+            val deleteAfterShare = preferenceRepository.getPreference(
+                Constants.PreferencesKey.keyDeleteAfterShareToAnki,
+                Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI_DEFAULT
+            ).first()
+            if (deleteAfterShare) {
+                cardRepository.deleteCard(card)
+            }
+        }
+        return false
+    }
+
+    fun onSwipedToDeleteCard(card: Card): Boolean {
+        viewModelScope.launch {
+            cardRepository.deleteCard(card)
+        }
+        return false
     }
 }
