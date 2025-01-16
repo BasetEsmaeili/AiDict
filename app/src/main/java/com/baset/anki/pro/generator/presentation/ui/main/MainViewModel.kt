@@ -42,6 +42,8 @@ class MainViewModel(
                 ?: Constants.PreferencesKey.defaultAiModelName
             val apiKey = (preferencesMap[Constants.PreferencesKey.keyApiKey] as? String)
                 ?: Constants.PreferencesKey.API_KEY_DEFAULT_VALUE
+            val englishLevel = (preferencesMap[Constants.PreferencesKey.keyEnglishLevel] as? String)
+                ?: Constants.PreferencesKey.defaultEnglishLevel
             PreferencesUiState(
                 preferenceItems = persistentListOf(
                     PreferenceItem.Switch(
@@ -54,7 +56,7 @@ class MainViewModel(
                         id = Constants.PreferencesKey.MODEL_NAME_ID,
                         title = UiText.StringResource(R.string.title_model_name),
                         description = UiText.StringResource(R.string.description_model_name),
-                        options = Constants.AI.models.map {
+                        options = Constants.Arrays.models.map {
                             OptionItem(
                                 id = Constants.PreferencesKey.MODEL_NAME_ID,
                                 selected = it.contentEquals(modelName, true),
@@ -68,6 +70,18 @@ class MainViewModel(
                         description = UiText.StringResource(R.string.description_api_key),
                         inputType = PreferenceItem.Input.InputType.Text,
                         text = apiKey
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.ENGLISH_LEVEL,
+                        title = UiText.StringResource(R.string.your_english_level),
+                        description = UiText.StringResource(R.string.description_english_level),
+                        options = Constants.Arrays.englishLevels.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.ENGLISH_LEVEL,
+                                selected = it.contentEquals(englishLevel, true),
+                                text = it
+                            )
+                        }.toImmutableList()
                     )
                 )
             )
@@ -122,6 +136,13 @@ class MainViewModel(
                         optionItem.text
                     )
                 }
+
+                Constants.PreferencesKey.ENGLISH_LEVEL -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyEnglishLevel,
+                        optionItem.text
+                    )
+                }
             }
         }
     }
@@ -155,7 +176,7 @@ class MainViewModel(
         viewModelScope.launch {
             val deleteAfterShare = preferenceRepository.getPreference(
                 Constants.PreferencesKey.keyDeleteAfterShareToAnki,
-                Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI_DEFAULT
+                Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI_DEFAULT_VALUE
             ).first()
             if (deleteAfterShare) {
                 cardRepository.deleteCard(card)

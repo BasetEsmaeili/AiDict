@@ -36,6 +36,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -43,7 +44,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AiViewModel(
-    preferenceRepository: PreferenceRepository,
+    private val preferenceRepository: PreferenceRepository,
     private val resourceProvider: ResourceProvider,
     networkMonitor: NetworkMonitor,
     private val uriConverter: UriConverter,
@@ -131,7 +132,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryHarassment]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT_DEFAULT
+                        ?: Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT_DEFAULT_VALUE
                 storedValue.contentEquals(it.name)
             }
 
@@ -140,7 +141,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryHateSpeech]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH_DEFAULT
+                        ?: Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH_DEFAULT_VALUE
                 storedValue.contentEquals(it.name)
             }
 
@@ -149,7 +150,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategorySexuallyExplicit]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT
+                        ?: Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT_VALUE
                 storedValue.contentEquals(it.name)
             }
 
@@ -158,7 +159,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryDangerousContent]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT
+                        ?: Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT_VALUE
                 storedValue.contentEquals(it.name)
             }
         return listOf(
@@ -178,10 +179,10 @@ class AiViewModel(
     private fun generateRequestOptions(preferencesMap: Map<Preferences.Key<*>, Any>): RequestOptions {
         val requestTimeoutException =
             (preferencesMap[Constants.PreferencesKey.keyRequestTimeout] as? Long)
-                ?: Constants.PreferencesKey.REQUEST_TIME_OUT_DEFAULT
+                ?: Constants.PreferencesKey.REQUEST_TIME_OUT_DEFAULT_VALUE
         val apiVersion =
             preferencesMap[Constants.PreferencesKey.keyApiVersion]?.toString()
-                ?: Constants.PreferencesKey.API_VERSION_DEFAULT
+                ?: Constants.PreferencesKey.API_VERSION_DEFAULT_VALUE
 
         return RequestOptions(
             requestTimeoutException,
@@ -243,8 +244,20 @@ class AiViewModel(
                 pickedImageState.value?.let { pickedMedia ->
                     attachedMediaByteArray = uriConverter.toByteArray(pickedMedia.pickedMedia)
                 }
+                val englishLevel = preferenceRepository.getPreference(
+                    Constants.PreferencesKey.keyEnglishLevel,
+                    Constants.PreferencesKey.defaultEnglishLevel
+                ).first()
                 val content = content {
                     text(commandTextState.text.toString())
+                    if (!englishLevel.contentEquals(
+                            Constants.PreferencesKey.defaultEnglishLevel,
+                            true
+                        )
+                    ) {
+                        text("${resourceProvider.getString(R.string.my_english_level_is)} $englishLevel")
+                        text(resourceProvider.getString(R.string.do_not_mention_my_english_level))
+                    }
                     attachedMediaByteArray?.let {
                         blob("image/jpeg", it)
                     }

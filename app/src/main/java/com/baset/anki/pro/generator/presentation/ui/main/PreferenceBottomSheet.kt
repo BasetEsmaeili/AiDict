@@ -112,7 +112,7 @@ fun PreferencesModalBottomSheetContent(
             Text(
                 text = buildAnnotatedString {
                     append(stringResource(R.string.label_code_available_on))
-                    append(" ")
+                    append(Constants.SPACE)
                     withLink(
                         LinkAnnotation.Url(
                             Constants.Intent.GITHUB_URI,

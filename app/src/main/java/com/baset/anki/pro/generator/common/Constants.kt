@@ -3,7 +3,8 @@ package com.baset.anki.pro.generator.common
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.baset.anki.pro.generator.common.Constants.AI.models
+import com.baset.anki.pro.generator.common.Constants.Arrays.englishLevels
+import com.baset.anki.pro.generator.common.Constants.Arrays.models
 
 object Constants {
     const val FLOW_TIMEOUT = 5000L
@@ -22,49 +23,63 @@ object Constants {
         val keyApiKey = stringPreferencesKey(API_KEY)
         val API_KEY_DEFAULT_VALUE: String? = null
 
+        const val ENGLISH_LEVEL = "english_level"
+        val keyEnglishLevel = stringPreferencesKey(ENGLISH_LEVEL)
+        val defaultEnglishLevel: String = englishLevels[0]
+
         const val REQUEST_TIME_OUT = "request_time_out"
         val keyRequestTimeout = longPreferencesKey(REQUEST_TIME_OUT)
-        const val REQUEST_TIME_OUT_DEFAULT = 5000L
+        const val REQUEST_TIME_OUT_DEFAULT_VALUE = 5000L
 
         const val API_VERSION = "api_version"
         val keyApiVersion = longPreferencesKey(API_VERSION)
-        const val API_VERSION_DEFAULT = "v1beta"
+        const val API_VERSION_DEFAULT_VALUE = "v1beta"
 
         const val HARM_CATEGORY_HARASSMENT = "harm_category_harassment"
         val keyHarmCategoryHarassment = stringPreferencesKey(HARM_CATEGORY_HARASSMENT)
-        const val HARM_CATEGORY_HARASSMENT_DEFAULT = "NONE"
+        const val HARM_CATEGORY_HARASSMENT_DEFAULT_VALUE = "NONE"
 
         const val HARM_CATEGORY_HATE_SPEECH = "harm_category_hate_speech"
         val keyHarmCategoryHateSpeech = stringPreferencesKey(HARM_CATEGORY_HATE_SPEECH)
-        const val HARM_CATEGORY_HATE_SPEECH_DEFAULT = "NONE"
+        const val HARM_CATEGORY_HATE_SPEECH_DEFAULT_VALUE = "NONE"
 
         const val HARM_CATEGORY_SEXUALLY_EXPLICIT = "harm_category_sexually_explicit"
         val keyHarmCategorySexuallyExplicit = stringPreferencesKey(HARM_CATEGORY_SEXUALLY_EXPLICIT)
-        const val HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT = "NONE"
+        const val HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT_VALUE = "NONE"
 
         const val HARM_CATEGORY_DANGEROUS_CONTENT = "harm_category_dangerous_content"
         val keyHarmCategoryDangerousContent = stringPreferencesKey(HARM_CATEGORY_DANGEROUS_CONTENT)
-        const val HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT = "NONE"
+        const val HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT_VALUE = "NONE"
 
         const val INCLUDE_GOOGLE_SEARCH = "include_google_search"
         val keyIncludeGoogleSearch = booleanPreferencesKey(INCLUDE_GOOGLE_SEARCH)
-        const val INCLUDE_GOOGLE_SEARCH_DEFAULT = false
+        const val INCLUDE_GOOGLE_SEARCH_DEFAULT_VALUE = false
 
         const val DELETE_AFTER_SHARE_TO_ANKI = "delete_after_share_to_anki"
         val keyDeleteAfterShareToAnki = booleanPreferencesKey(DELETE_AFTER_SHARE_TO_ANKI)
-        const val DELETE_AFTER_SHARE_TO_ANKI_DEFAULT = true
+        const val DELETE_AFTER_SHARE_TO_ANKI_DEFAULT_VALUE = true
     }
 
     object Database {
         const val DB_NAME = "ai_dict"
     }
 
-    object AI {
+    object Arrays {
         val models = listOf(
             "gemini-2.0-flash-exp",
             "gemini-1.5-flash",
             "gemini-1.5-flash-8b",
             "gemini-1.5-pro"
+        )
+
+        val englishLevels = listOf(
+            "Unknown",
+            "A1",
+            "A2",
+            "B1",
+            "B2",
+            "C1",
+            "C2"
         )
     }
 

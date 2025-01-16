@@ -22,6 +22,7 @@
     <string name="error_check_network">Please check your internet connection!</string>
     <string name="label_none">None!</string>
     <string name="title_model_name">Model name</string>
+    <string name="your_english_level">Your english level</string>
     <string name="description_model_name">"The AI model that runs your commands."</string>
     <string name="label_enter_value">Enter value:</string>
     <string name="title_api_key">Api key</string>
@@ -41,4 +42,7 @@
     <string name="message_save_accomplished">Save accomplished.</string>
     <string name="content_description_swipe_to_delete_card">Swipe to delete card.</string>
     <string name="content_description_swipe_to_add_anki">Swipe to create a card in Anki.</string>
+    <string name="description_english_level">Specify your English knowledge level.</string>
+    <string name="my_english_level_is">My English level is:</string>
+    <string name="do_not_mention_my_english_level">Do not mention my English level in response, just prepare the response based on it.</string>
 </resources>
