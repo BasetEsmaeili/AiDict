@@ -51,6 +51,10 @@ object Constants {
         const val INCLUDE_GOOGLE_SEARCH_DEFAULT = false
     }
 
+    object Database {
+        const val DB_NAME = "ai_dict"
+    }
+
     object AI {
         val models = listOf(
             "gemini-2.0-flash-exp",
