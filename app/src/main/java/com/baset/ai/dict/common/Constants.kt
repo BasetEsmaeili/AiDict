@@ -33,7 +33,7 @@ object Constants {
         const val REQUEST_TIME_OUT_DEFAULT_VALUE = 5000L
 
         const val API_VERSION = "api_version"
-        val keyApiVersion = longPreferencesKey(API_VERSION)
+        val keyApiVersion = stringPreferencesKey(API_VERSION)
         const val API_VERSION_DEFAULT_VALUE = "v1beta"
 
         const val HARM_CATEGORY_HARASSMENT = "harm_category_harassment"

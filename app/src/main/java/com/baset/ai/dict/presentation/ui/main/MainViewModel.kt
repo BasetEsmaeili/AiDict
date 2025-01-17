@@ -56,9 +56,26 @@ class MainViewModel(
             val dangerousContent =
                 (preferencesMap[Constants.PreferencesKey.keyHarmCategoryDangerousContent] as? String)
                     ?: Constants.PreferencesKey.harmCategoryDangerousContentDefaultValue
+            val requestTimeout =
+                (preferencesMap[Constants.PreferencesKey.keyRequestTimeout] as? Long)
+                    ?: Constants.PreferencesKey.REQUEST_TIME_OUT_DEFAULT_VALUE
+            val apiVersion = (preferencesMap[Constants.PreferencesKey.keyApiVersion] as? String)
+                ?: Constants.PreferencesKey.API_VERSION_DEFAULT_VALUE
 
             PreferencesUiState(
                 preferenceItems = persistentListOf(
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.ENGLISH_LEVEL,
+                        title = UiText.StringResource(R.string.your_english_level),
+                        description = UiText.StringResource(R.string.description_english_level),
+                        options = Constants.Arrays.englishLevels.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.ENGLISH_LEVEL,
+                                selected = it.contentEquals(englishLevel, true),
+                                text = it
+                            )
+                        }.toImmutableList()
+                    ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.WINDOW_SERVICE_ID,
                         checked = windowServiceEnabled,
@@ -132,17 +149,19 @@ class MainViewModel(
                             )
                         }.toImmutableList()
                     ),
-                    PreferenceItem.OptionDialog(
-                        id = Constants.PreferencesKey.ENGLISH_LEVEL,
-                        title = UiText.StringResource(R.string.your_english_level),
-                        description = UiText.StringResource(R.string.description_english_level),
-                        options = Constants.Arrays.englishLevels.map {
-                            OptionItem(
-                                id = Constants.PreferencesKey.ENGLISH_LEVEL,
-                                selected = it.contentEquals(englishLevel, true),
-                                text = it
-                            )
-                        }.toImmutableList()
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.REQUEST_TIME_OUT,
+                        title = UiText.StringResource(R.string.title_request_timeout),
+                        description = UiText.StringResource(R.string.description_request_timeout),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = requestTimeout.toString()
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.API_VERSION,
+                        title = UiText.StringResource(R.string.title_api_version),
+                        description = UiText.StringResource(R.string.description_api_version),
+                        inputType = PreferenceItem.Input.InputType.Text,
+                        text = apiVersion
                     )
                 )
             )
@@ -246,6 +265,20 @@ class MainViewModel(
                 Constants.PreferencesKey.API_KEY -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyApiKey,
+                        value
+                    )
+                }
+
+                Constants.PreferencesKey.REQUEST_TIME_OUT -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyRequestTimeout,
+                        value.toLong()
+                    )
+                }
+
+                Constants.PreferencesKey.API_VERSION -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyApiVersion,
                         value
                     )
                 }

@@ -53,4 +53,8 @@
     <string name="description_harm_category_sexually_explicit">Contains references to sexual acts or other lewd content.</string>
     <string name="title_harm_category_dangerous_content">Dangerous</string>
     <string name="description_harm_category_dangerous_content">Promotes, facilitates, or encourages harmful acts.</string>
+    <string name="title_request_timeout">Request timeout</string>
+    <string name="description_request_timeout">Commands request timeout in milliseconds.</string>
+    <string name="title_api_version">API version</string>
+    <string name="description_api_version">Gemeni API version</string>
 </resources>
