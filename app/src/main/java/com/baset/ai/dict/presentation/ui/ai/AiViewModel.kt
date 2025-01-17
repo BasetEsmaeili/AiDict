@@ -56,9 +56,9 @@ class AiViewModel(
         R.string.title_what_would_you_like_to_ask,
         resourceProvider.getString(
             if (isDaytime()) {
-                R.string.today
+                R.string.label_today
             } else {
-                R.string.tonight
+                R.string.label_tonight
             }
         )
     )
@@ -255,8 +255,8 @@ class AiViewModel(
                             true
                         )
                     ) {
-                        text("${resourceProvider.getString(R.string.my_english_level_is)} $englishLevel")
-                        text(resourceProvider.getString(R.string.do_not_mention_my_english_level))
+                        text("${resourceProvider.getString(R.string.command_my_english_level_is)} $englishLevel")
+                        text(resourceProvider.getString(R.string.command_do_not_mention_my_english_level))
                     }
                     attachedMediaByteArray?.let {
                         blob("image/jpeg", it)

@@ -119,7 +119,7 @@ fun PreferencesModalBottomSheetContent(
                             styles = TextLinkStyles(style = SpanStyle(color = colorResource(R.color.purple_500)))
                         )
                     ) {
-                        append(stringResource(R.string.github))
+                        append(stringResource(R.string.label_github))
                     }
                 },
                 textAlign = TextAlign.Center

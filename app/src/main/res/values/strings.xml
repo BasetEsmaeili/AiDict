@@ -8,8 +8,8 @@
     <string name="message_accept_overlay_permission">Please accept overlay permission.</string>
     <string name="message_accept_necessary_permissions">Please accept necessary permissions.</string>
     <string name="title_what_would_you_like_to_ask">What would you like to ask %s?</string>
-    <string name="today">today</string>
-    <string name="tonight">tonight</string>
+    <string name="label_today">today</string>
+    <string name="label_tonight">tonight</string>
     <string name="content_description_full_screen">Open full screen</string>
     <string name="content_description_open_gallery">Select media to upload</string>
     <string name="content_description_speech_to_text">Speech to text</string>
@@ -22,7 +22,7 @@
     <string name="error_check_network">Please check your internet connection!</string>
     <string name="label_none">None!</string>
     <string name="title_model_name">Model name</string>
-    <string name="your_english_level">Your english level</string>
+    <string name="title_your_english_level">Your english level</string>
     <string name="description_model_name">"The AI model that runs your commands."</string>
     <string name="label_enter_value">Enter value:</string>
     <string name="title_api_key">Api key</string>
@@ -38,13 +38,13 @@
     <string name="title_share_via">Share via...</string>
     <string name="content_description_github">Project url on Github.</string>
     <string name="label_code_available_on">The project is open source, and the code available on:</string>
-    <string name="github">Github</string>
+    <string name="label_github">Github</string>
     <string name="message_save_accomplished">Save accomplished.</string>
     <string name="content_description_swipe_to_delete_card">Swipe to delete card.</string>
     <string name="content_description_swipe_to_add_anki">Swipe to create a card in Anki.</string>
     <string name="description_english_level">Specify your English knowledge level.</string>
-    <string name="my_english_level_is">My English level is:</string>
-    <string name="do_not_mention_my_english_level">Do not mention my English level in response, just prepare the response based on it.</string>
+    <string name="command_my_english_level_is">My English level is:</string>
+    <string name="command_do_not_mention_my_english_level">Do not mention my English level in response, just prepare the response based on it.</string>
     <string name="title_harm_category_harassment">Harassment</string>
     <string name="description_harm_category_harassment">Negative or harmful comments targeting identity and/or protected attributes.</string>
     <string name="title_harm_category_hate_speech">Hate speech</string>

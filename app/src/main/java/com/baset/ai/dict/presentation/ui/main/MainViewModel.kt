@@ -66,7 +66,7 @@ class MainViewModel(
                 preferenceItems = persistentListOf(
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.ENGLISH_LEVEL,
-                        title = UiText.StringResource(R.string.your_english_level),
+                        title = UiText.StringResource(R.string.title_your_english_level),
                         description = UiText.StringResource(R.string.description_english_level),
                         options = Constants.Arrays.englishLevels.map {
                             OptionItem(
