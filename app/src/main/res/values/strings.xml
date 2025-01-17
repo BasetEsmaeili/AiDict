@@ -68,4 +68,6 @@
     <string name="title_candidate_count">candidate count</string>
     <string name="description_candidate_count">a parameter that allows you to specify how many different response options you want the model to generate for a single query</string>
     <string name="label_my_command">My command is:</string>
+    <string name="title_delete_after_share_to_anki">Delete after share to Anki</string>
+    <string name="description_delete_after_share_to_anki">Delete temporary card after shared with Anki app.</string>
 </resources>

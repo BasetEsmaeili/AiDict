@@ -38,6 +38,9 @@ class MainViewModel(
             val windowServiceEnabled: Boolean =
                 (preferencesMap[Constants.PreferencesKey.keyWindowServiceEnabled] as? Boolean)
                     ?: Constants.PreferencesKey.WINDOW_SERVICE_DEFAULT_VALUE
+            val deleteAfterShareToAnki =
+                (preferencesMap[Constants.PreferencesKey.keyDeleteAfterShareToAnki] as? Boolean)
+                    ?: Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI_DEFAULT_VALUE
             val modelName = (preferencesMap[Constants.PreferencesKey.keyModelName] as? String)
                 ?: Constants.PreferencesKey.defaultAiModelName
             val apiKey = (preferencesMap[Constants.PreferencesKey.keyApiKey] as? String)
@@ -86,6 +89,12 @@ class MainViewModel(
                                 text = it
                             )
                         }.toImmutableList()
+                    ),
+                    PreferenceItem.Switch(
+                        id = Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI,
+                        checked = deleteAfterShareToAnki,
+                        title = UiText.StringResource(R.string.title_delete_after_share_to_anki),
+                        description = UiText.StringResource(R.string.description_delete_after_share_to_anki)
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.WINDOW_SERVICE_ID,
@@ -246,6 +255,13 @@ class MainViewModel(
                 Constants.PreferencesKey.WINDOW_SERVICE_ID -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyWindowServiceEnabled,
+                        (preferenceItem as PreferenceItem.Switch).checked.not()
+                    )
+                }
+
+                Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyDeleteAfterShareToAnki,
                         (preferenceItem as PreferenceItem.Switch).checked.not()
                     )
                 }
