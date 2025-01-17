@@ -44,6 +44,19 @@ class MainViewModel(
                 ?: Constants.PreferencesKey.API_KEY_DEFAULT_VALUE
             val englishLevel = (preferencesMap[Constants.PreferencesKey.keyEnglishLevel] as? String)
                 ?: Constants.PreferencesKey.defaultEnglishLevel
+            val harassment =
+                (preferencesMap[Constants.PreferencesKey.keyHarmCategoryHarassment] as? String)
+                    ?: Constants.PreferencesKey.harmCategoryHarassmentDefaultValue
+            val hateSpeech =
+                (preferencesMap[Constants.PreferencesKey.keyHarmCategoryHateSpeech] as? String)
+                    ?: Constants.PreferencesKey.harmCategoryHateSpeechDefaultValue
+            val sexuallyExplicit =
+                (preferencesMap[Constants.PreferencesKey.keyHarmCategorySexuallyExplicit] as? String)
+                    ?: Constants.PreferencesKey.harmCategorySexuallyExplicitDefaultValue
+            val dangerousContent =
+                (preferencesMap[Constants.PreferencesKey.keyHarmCategoryDangerousContent] as? String)
+                    ?: Constants.PreferencesKey.harmCategoryDangerousContentDefaultValue
+
             PreferencesUiState(
                 preferenceItems = persistentListOf(
                     PreferenceItem.Switch(
@@ -70,6 +83,54 @@ class MainViewModel(
                         description = UiText.StringResource(R.string.description_api_key),
                         inputType = PreferenceItem.Input.InputType.Text,
                         text = apiKey
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT,
+                        title = UiText.StringResource(R.string.title_harm_category_harassment),
+                        description = UiText.StringResource(R.string.description_harm_category_harassment),
+                        options = Constants.Arrays.securityOptions.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT,
+                                selected = it.contentEquals(harassment, true),
+                                text = it
+                            )
+                        }.toImmutableList()
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH,
+                        title = UiText.StringResource(R.string.title_harm_category_hate_speech),
+                        description = UiText.StringResource(R.string.description_harm_category_hate_speech),
+                        options = Constants.Arrays.securityOptions.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH,
+                                selected = it.contentEquals(hateSpeech, true),
+                                text = it
+                            )
+                        }.toImmutableList()
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                        title = UiText.StringResource(R.string.title_harm_category_sexually_explicit),
+                        description = UiText.StringResource(R.string.description_harm_category_sexually_explicit),
+                        options = Constants.Arrays.securityOptions.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                                selected = it.contentEquals(sexuallyExplicit, true),
+                                text = it
+                            )
+                        }.toImmutableList()
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT,
+                        title = UiText.StringResource(R.string.title_harm_category_dangerous_content),
+                        description = UiText.StringResource(R.string.description_harm_category_dangerous_content),
+                        options = Constants.Arrays.securityOptions.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT,
+                                selected = it.contentEquals(dangerousContent, true),
+                                text = it
+                            )
+                        }.toImmutableList()
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.ENGLISH_LEVEL,
@@ -140,6 +201,34 @@ class MainViewModel(
                 Constants.PreferencesKey.ENGLISH_LEVEL -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyEnglishLevel,
+                        optionItem.text
+                    )
+                }
+
+                Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyHarmCategoryHarassment,
+                        optionItem.text
+                    )
+                }
+
+                Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyHarmCategoryHateSpeech,
+                        optionItem.text
+                    )
+                }
+
+                Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyHarmCategorySexuallyExplicit,
+                        optionItem.text
+                    )
+                }
+
+                Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyHarmCategoryDangerousContent,
                         optionItem.text
                     )
                 }

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.baset.anki.pro.generator.common.Constants.Arrays.englishLevels
 import com.baset.anki.pro.generator.common.Constants.Arrays.models
+import com.baset.anki.pro.generator.common.Constants.Arrays.securityOptions
 
 object Constants {
     const val FLOW_TIMEOUT = 5000L
@@ -37,19 +38,19 @@ object Constants {
 
         const val HARM_CATEGORY_HARASSMENT = "harm_category_harassment"
         val keyHarmCategoryHarassment = stringPreferencesKey(HARM_CATEGORY_HARASSMENT)
-        const val HARM_CATEGORY_HARASSMENT_DEFAULT_VALUE = "NONE"
+        val harmCategoryHarassmentDefaultValue = securityOptions[0]
 
         const val HARM_CATEGORY_HATE_SPEECH = "harm_category_hate_speech"
         val keyHarmCategoryHateSpeech = stringPreferencesKey(HARM_CATEGORY_HATE_SPEECH)
-        const val HARM_CATEGORY_HATE_SPEECH_DEFAULT_VALUE = "NONE"
+        val harmCategoryHateSpeechDefaultValue = securityOptions[0]
 
         const val HARM_CATEGORY_SEXUALLY_EXPLICIT = "harm_category_sexually_explicit"
         val keyHarmCategorySexuallyExplicit = stringPreferencesKey(HARM_CATEGORY_SEXUALLY_EXPLICIT)
-        const val HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT_VALUE = "NONE"
+        val harmCategorySexuallyExplicitDefaultValue = securityOptions[0]
 
         const val HARM_CATEGORY_DANGEROUS_CONTENT = "harm_category_dangerous_content"
         val keyHarmCategoryDangerousContent = stringPreferencesKey(HARM_CATEGORY_DANGEROUS_CONTENT)
-        const val HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT_VALUE = "NONE"
+        val harmCategoryDangerousContentDefaultValue = securityOptions[0]
 
         const val INCLUDE_GOOGLE_SEARCH = "include_google_search"
         val keyIncludeGoogleSearch = booleanPreferencesKey(INCLUDE_GOOGLE_SEARCH)
@@ -80,6 +81,14 @@ object Constants {
             "B2",
             "C1",
             "C2"
+        )
+
+        val securityOptions = listOf(
+            "NONE",
+            "UNSPECIFIED",
+            "LOW_AND_ABOVE",
+            "MEDIUM_AND_ABOVE",
+            "ONLY_HIGH"
         )
     }
 

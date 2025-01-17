@@ -45,4 +45,12 @@
     <string name="description_english_level">Specify your English knowledge level.</string>
     <string name="my_english_level_is">My English level is:</string>
     <string name="do_not_mention_my_english_level">Do not mention my English level in response, just prepare the response based on it.</string>
+    <string name="title_harm_category_harassment">Harassment</string>
+    <string name="description_harm_category_harassment">Negative or harmful comments targeting identity and/or protected attributes.</string>
+    <string name="title_harm_category_hate_speech">Hate speech</string>
+    <string name="description_harm_category_hate_speech">Content that is rude, disrespectful, or profane.</string>
+    <string name="title_harm_category_sexually_explicit">Sexually explicit</string>
+    <string name="description_harm_category_sexually_explicit">Contains references to sexual acts or other lewd content.</string>
+    <string name="title_harm_category_dangerous_content">Dangerous</string>
+    <string name="description_harm_category_dangerous_content">Promotes, facilitates, or encourages harmful acts.</string>
 </resources>

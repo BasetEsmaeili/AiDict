@@ -132,7 +132,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryHarassment]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT_DEFAULT_VALUE
+                        ?: Constants.PreferencesKey.harmCategoryHarassmentDefaultValue
                 storedValue.contentEquals(it.name)
             }
 
@@ -141,7 +141,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryHateSpeech]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH_DEFAULT_VALUE
+                        ?: Constants.PreferencesKey.harmCategoryHateSpeechDefaultValue
                 storedValue.contentEquals(it.name)
             }
 
@@ -150,7 +150,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategorySexuallyExplicit]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT_DEFAULT_VALUE
+                        ?: Constants.PreferencesKey.harmCategorySexuallyExplicitDefaultValue
                 storedValue.contentEquals(it.name)
             }
 
@@ -159,7 +159,7 @@ class AiViewModel(
                 val storedValue =
                     preferencesMap[Constants.PreferencesKey.keyHarmCategoryDangerousContent]
                         ?.toString()
-                        ?: Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT_DEFAULT_VALUE
+                        ?: Constants.PreferencesKey.harmCategoryDangerousContentDefaultValue
                 storedValue.contentEquals(it.name)
             }
         return listOf(
