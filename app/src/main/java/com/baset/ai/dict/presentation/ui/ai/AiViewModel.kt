@@ -254,7 +254,6 @@ class AiViewModel(
                     Constants.PreferencesKey.defaultEnglishLevel
                 ).first()
                 val content = content {
-                    text(commandTextState.text.toString())
                     if (!englishLevel.contentEquals(
                             Constants.PreferencesKey.defaultEnglishLevel,
                             true
@@ -263,6 +262,8 @@ class AiViewModel(
                         text("${resourceProvider.getString(R.string.command_my_english_level_is)} $englishLevel")
                         text(resourceProvider.getString(R.string.command_do_not_mention_my_english_level))
                     }
+                    text(resourceProvider.getString(R.string.label_my_command))
+                    text(commandTextState.text.toString())
                     attachedMediaByteArray?.let {
                         blob("image/jpeg", it)
                     }
