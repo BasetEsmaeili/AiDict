@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AnkiProCardGenerator"
+        android:theme="@style/Theme.AiDict"
         tools:targetApi="31">
         <activity
             android:name=".presentation.ui.ai.AiActivity"
@@ -43,7 +43,7 @@
             android:name=".presentation.ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AnkiProCardGenerator">
+            android:theme="@style/Theme.AiDict">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AnkiPro Card Generator"
+rootProject.name = "AiDict"
 include(":app")

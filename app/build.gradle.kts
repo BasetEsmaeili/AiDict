@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.baset.anki.pro.generator"
+    namespace = "com.baset.ai.dict"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.baset.anki.pro.generator"
+        applicationId = "com.baset.ai.dict"
         minSdk = 30
         targetSdk = 35
         versionCode = 1
