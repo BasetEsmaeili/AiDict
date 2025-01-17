@@ -116,7 +116,7 @@ class AiViewModel(
             GenerativeModel(
                 modelName = modelName,
                 apiKey = apikey,
-                generationConfig = generateGenerationConfig(),
+                generationConfig = generateGenerationConfig(preferencesMap),
                 safetySettings = generateSafetySettings(preferencesMap),
                 requestOptions = generateRequestOptions(preferencesMap)
             )
@@ -190,13 +190,18 @@ class AiViewModel(
         )
     }
 
-    private fun generateGenerationConfig(): GenerationConfig {
+    private fun generateGenerationConfig(preferencesMap: Map<Preferences.Key<*>, Any>): GenerationConfig {
         return with(GenerationConfig.builder()) {
-            temperature = 0.1f
-            maxOutputTokens = 150
-            topK = 50
-            topP = 0.95f
-            candidateCount = 1
+            temperature = (preferencesMap[Constants.PreferencesKey.keyTemperature] as? Float)
+                ?: Constants.PreferencesKey.TEMPERATURE_DEFAULT_VALUE
+            maxOutputTokens = (preferencesMap[Constants.PreferencesKey.keyMaxOutputTokens] as? Int)
+                ?: Constants.PreferencesKey.MAX_OUTPUT_TOKENS_DEFAULT_VALUE
+            topK = (preferencesMap[Constants.PreferencesKey.keyTopK] as? Int)
+                ?: Constants.PreferencesKey.TOP_K_DEFAULT_VALUE
+            topP = (preferencesMap[Constants.PreferencesKey.keyTopP] as? Float)
+                ?: Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
+            candidateCount = (preferencesMap[Constants.PreferencesKey.keyCandidateCount] as? Int)
+                ?: Constants.PreferencesKey.CANDIDATE_COUNT_DEFAULT_VALUE
             build()
         }
     }

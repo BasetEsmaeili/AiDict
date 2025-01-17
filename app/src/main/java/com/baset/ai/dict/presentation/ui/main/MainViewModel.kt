@@ -61,7 +61,18 @@ class MainViewModel(
                     ?: Constants.PreferencesKey.REQUEST_TIME_OUT_DEFAULT_VALUE
             val apiVersion = (preferencesMap[Constants.PreferencesKey.keyApiVersion] as? String)
                 ?: Constants.PreferencesKey.API_VERSION_DEFAULT_VALUE
-
+            val temperature = (preferencesMap[Constants.PreferencesKey.keyTemperature] as? Float)
+                ?: Constants.PreferencesKey.TEMPERATURE_DEFAULT_VALUE
+            val maxOutputTokens =
+                (preferencesMap[Constants.PreferencesKey.keyMaxOutputTokens] as? Int)
+                    ?: Constants.PreferencesKey.MAX_OUTPUT_TOKENS_DEFAULT_VALUE
+            val topK = (preferencesMap[Constants.PreferencesKey.keyTopK] as? Int)
+                ?: Constants.PreferencesKey.TOP_K_DEFAULT_VALUE
+            val topP = (preferencesMap[Constants.PreferencesKey.keyTopP] as? Float)
+                ?: Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
+            val candidateCount =
+                (preferencesMap[Constants.PreferencesKey.keyCandidateCount] as? Int)
+                    ?: Constants.PreferencesKey.CANDIDATE_COUNT_DEFAULT_VALUE
             PreferencesUiState(
                 preferenceItems = persistentListOf(
                     PreferenceItem.OptionDialog(
@@ -162,7 +173,42 @@ class MainViewModel(
                         description = UiText.StringResource(R.string.description_api_version),
                         inputType = PreferenceItem.Input.InputType.Text,
                         text = apiVersion
-                    )
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.TEMPERATURE,
+                        title = UiText.StringResource(R.string.title_temperature),
+                        description = UiText.StringResource(R.string.description_temperature),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = temperature.toString()
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.MAX_OUTPUT_TOKENS,
+                        title = UiText.StringResource(R.string.title_max_output_tokens),
+                        description = UiText.StringResource(R.string.description_max_output_tokens),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = maxOutputTokens.toString()
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.TOP_K,
+                        title = UiText.StringResource(R.string.title_top_k),
+                        description = UiText.StringResource(R.string.description_top_k),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = topK.toString()
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.TOP_P,
+                        title = UiText.StringResource(R.string.title_top_p),
+                        description = UiText.StringResource(R.string.description_top_p),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = topP.toString()
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.CANDIDATE_COUNT,
+                        title = UiText.StringResource(R.string.title_candidate_count),
+                        description = UiText.StringResource(R.string.description_candidate_count),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = candidateCount.toString()
+                    ),
                 )
             )
         }.stateIn(
@@ -280,6 +326,41 @@ class MainViewModel(
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyApiVersion,
                         value
+                    )
+                }
+
+                Constants.PreferencesKey.TEMPERATURE -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyTemperature,
+                        value.toFloat()
+                    )
+                }
+
+                Constants.PreferencesKey.MAX_OUTPUT_TOKENS -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyMaxOutputTokens,
+                        value.toInt()
+                    )
+                }
+
+                Constants.PreferencesKey.TOP_K -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyTopK,
+                        value.toInt()
+                    )
+                }
+
+                Constants.PreferencesKey.TOP_P -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyTopP,
+                        value.toFloat()
+                    )
+                }
+
+                Constants.PreferencesKey.CANDIDATE_COUNT -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyCandidateCount,
+                        value.toInt()
                     )
                 }
             }

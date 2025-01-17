@@ -1,6 +1,8 @@
 package com.baset.ai.dict.common
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.baset.ai.dict.common.Constants.Arrays.englishLevels
@@ -51,6 +53,27 @@ object Constants {
         const val HARM_CATEGORY_DANGEROUS_CONTENT = "harm_category_dangerous_content"
         val keyHarmCategoryDangerousContent = stringPreferencesKey(HARM_CATEGORY_DANGEROUS_CONTENT)
         val harmCategoryDangerousContentDefaultValue = securityOptions[0]
+
+        const val TEMPERATURE = "temperature"
+        val keyTemperature = floatPreferencesKey(TEMPERATURE)
+        const val TEMPERATURE_DEFAULT_VALUE = 0.1f
+
+        const val MAX_OUTPUT_TOKENS = "max_output_tokens"
+        val keyMaxOutputTokens = intPreferencesKey(MAX_OUTPUT_TOKENS)
+        const val MAX_OUTPUT_TOKENS_DEFAULT_VALUE = 150
+
+        const val TOP_K = "top_k"
+        val keyTopK = intPreferencesKey(TOP_K)
+        const val TOP_K_DEFAULT_VALUE = 50
+
+        const val TOP_P = "top_p"
+        val keyTopP = floatPreferencesKey(TOP_P)
+        const val TOP_P_DEFAULT_VALUE = 0.95f
+
+        const val CANDIDATE_COUNT = "candidate_count"
+        val keyCandidateCount = intPreferencesKey(CANDIDATE_COUNT)
+        const val CANDIDATE_COUNT_DEFAULT_VALUE = 1
+
 
         const val INCLUDE_GOOGLE_SEARCH = "include_google_search"
         val keyIncludeGoogleSearch = booleanPreferencesKey(INCLUDE_GOOGLE_SEARCH)

@@ -26,7 +26,7 @@
     <string name="description_model_name">"The AI model that runs your commands."</string>
     <string name="label_enter_value">Enter value:</string>
     <string name="title_api_key">Api key</string>
-    <string name="description_api_key">Your Gemeni developer console api key.</string>
+    <string name="description_api_key">Your Gemini developer console api key.</string>
     <string name="label_submit">Submit</string>
     <string name="error_model_config">Error in configurations, please make them correct.</string>
     <string name="content_description_try_again">Try again</string>
@@ -35,7 +35,7 @@
     <string name="content_description_copy">Copy result or part of it.</string>
     <string name="content_description_anki">Create Anki\'s card.</string>
     <string name="content_save_as_temporary_card">Save as a temporary card.</string>
-    <string name="title_share_via">Share via...</string>
+    <string name="title_share_via">Share via…</string>
     <string name="content_description_github">Project url on Github.</string>
     <string name="label_code_available_on">The project is open source, and the code available on:</string>
     <string name="label_github">Github</string>
@@ -56,5 +56,15 @@
     <string name="title_request_timeout">Request timeout</string>
     <string name="description_request_timeout">Commands request timeout in milliseconds.</string>
     <string name="title_api_version">API version</string>
-    <string name="description_api_version">Gemeni API version</string>
+    <string name="description_api_version">Gemini API version</string>
+    <string name="title_temperature">Temperature</string>
+    <string name="description_temperature">The temperature controls the degree of randomness in token selection. The temperature is used for sampling during response generation, which occurs when topP and topK are applied. Lower temperatures are good for prompts that require a more deterministic or less open-ended response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 is deterministic, meaning that the highest probability response is always selected.</string>
+    <string name="title_max_output_tokens">Max output tokens</string>
+    <string name="description_max_output_tokens">Specifies the maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60–80 words.</string>
+    <string name="title_top_k">topK</string>
+    <string name="description_top_k">The topK parameter changes how the model selects tokens for output. A topK of 1 means the selected token is the most probable among all the tokens in the model\'s vocabulary (also called greedy decoding), while a topK of 3 means that the next token is selected from among the 3 most probable using the temperature. For each token selection step, the topK tokens with the highest probabilities are sampled. Tokens are then further filtered based on topP with the final token selected using temperature sampling</string>
+    <string name="title_top_p">topP</string>
+    <string name="description_top_p">The topP parameter changes how the model selects tokens for output. Tokens are selected from the most to least probable until the sum of their probabilities equals the topP value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the topP value is 0.5, then the model will select either A or B as the next token by using the temperature and exclude C as a candidate. The default topP value is 0.95.</string>
+    <string name="title_candidate_count">candidate count</string>
+    <string name="description_candidate_count">a parameter that allows you to specify how many different response options you want the model to generate for a single query</string>
 </resources>
