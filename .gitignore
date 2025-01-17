@@ -54,6 +54,7 @@ lint-results.txt
 *.kotlin_module
 *.java_metadata
 .kotlin/
+.kotlin
 
 # IntelliJ IDEA-specific files
 .idea/workspace.xml
