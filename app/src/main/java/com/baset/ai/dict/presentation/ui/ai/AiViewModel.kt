@@ -30,6 +30,7 @@ import com.google.ai.client.generativeai.type.GenerationConfig
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.RequestOptions
 import com.google.ai.client.generativeai.type.SafetySetting
+import com.google.ai.client.generativeai.type.Tool
 import com.google.ai.client.generativeai.type.content
 import com.mohamedrejeb.richeditor.model.RichTextState
 import kotlinx.coroutines.channels.Channel
@@ -118,13 +119,18 @@ class AiViewModel(
                 apiKey = apikey,
                 generationConfig = generateGenerationConfig(preferencesMap),
                 safetySettings = generateSafetySettings(preferencesMap),
-                requestOptions = generateRequestOptions(preferencesMap)
+                requestOptions = generateRequestOptions(preferencesMap),
+                tools = generateTools(preferencesMap)
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             null
         )
+
+    private fun generateTools(preferencesMap: Map<Preferences.Key<*>, Any>): List<Tool> {
+        return listOf()
+    }
 
     private fun generateSafetySettings(preferencesMap: Map<Preferences.Key<*>, Any>): List<SafetySetting> {
         val harmCategoryHarassmentThreshold =
@@ -253,6 +259,10 @@ class AiViewModel(
                     Constants.PreferencesKey.keyEnglishLevel,
                     Constants.PreferencesKey.defaultEnglishLevel
                 ).first()
+                val includeGoogleSearch = preferenceRepository.getPreference(
+                    Constants.PreferencesKey.keyIncludeGoogleSearch,
+                    Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH_DEFAULT_VALUE
+                ).first()
                 val content = content {
                     if (!englishLevel.contentEquals(
                             Constants.PreferencesKey.defaultEnglishLevel,
@@ -261,6 +271,10 @@ class AiViewModel(
                     ) {
                         text("${resourceProvider.getString(R.string.command_my_english_level_is)} $englishLevel")
                         text(resourceProvider.getString(R.string.command_do_not_mention_my_english_level))
+                    }
+                    if (includeGoogleSearch) {
+                        text(resourceProvider.getString(R.string.command_include_google_search))
+                        text(resourceProvider.getString(R.string.command_do_not_mention_that_your_answer_is_based_on_google))
                     }
                     text(resourceProvider.getString(R.string.label_my_command))
                     text(commandTextState.text.toString())

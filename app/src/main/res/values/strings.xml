@@ -70,4 +70,8 @@
     <string name="label_my_command">My command is:</string>
     <string name="title_delete_after_share_to_anki">Delete after share to Anki</string>
     <string name="description_delete_after_share_to_anki">Delete temporary card after shared with Anki app.</string>
+    <string name="title_include_google_search">Include Google search</string>
+    <string name="description_include_google_search">AI searches in Google for better accurate responses.</string>
+    <string name="command_include_google_search">Verify your response with external sources like Google Search.</string>
+    <string name="command_do_not_mention_that_your_answer_is_based_on_google">Do not mention in response that your answer is based on a Google search.</string>
 </resources>

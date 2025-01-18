@@ -38,6 +38,9 @@ class MainViewModel(
             val windowServiceEnabled: Boolean =
                 (preferencesMap[Constants.PreferencesKey.keyWindowServiceEnabled] as? Boolean)
                     ?: Constants.PreferencesKey.WINDOW_SERVICE_DEFAULT_VALUE
+            val includeGoogleSearch =
+                (preferencesMap[Constants.PreferencesKey.keyIncludeGoogleSearch] as? Boolean)
+                    ?: Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH_DEFAULT_VALUE
             val deleteAfterShareToAnki =
                 (preferencesMap[Constants.PreferencesKey.keyDeleteAfterShareToAnki] as? Boolean)
                     ?: Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI_DEFAULT_VALUE
@@ -95,6 +98,12 @@ class MainViewModel(
                         checked = deleteAfterShareToAnki,
                         title = UiText.StringResource(R.string.title_delete_after_share_to_anki),
                         description = UiText.StringResource(R.string.description_delete_after_share_to_anki)
+                    ),
+                    PreferenceItem.Switch(
+                        id = Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH,
+                        checked = includeGoogleSearch,
+                        title = UiText.StringResource(R.string.title_include_google_search),
+                        description = UiText.StringResource(R.string.description_include_google_search)
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.WINDOW_SERVICE_ID,
@@ -262,6 +271,13 @@ class MainViewModel(
                 Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyDeleteAfterShareToAnki,
+                        (preferenceItem as PreferenceItem.Switch).checked.not()
+                    )
+                }
+
+                Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyIncludeGoogleSearch,
                         (preferenceItem as PreferenceItem.Switch).checked.not()
                     )
                 }
