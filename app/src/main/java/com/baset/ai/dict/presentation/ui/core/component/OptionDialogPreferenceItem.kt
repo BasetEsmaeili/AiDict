@@ -2,10 +2,8 @@ package com.baset.ai.dict.presentation.ui.core.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.baset.ai.dict.R
 import com.baset.ai.dict.presentation.ui.core.theme.Typography
 import com.baset.ai.dict.presentation.ui.core.theme.margin12
@@ -88,8 +85,10 @@ fun OptionPreference(
                 ) {
                     append(title)
                 }
-                append("\n")
-                append(description)
+                if (!description.isNullOrEmpty()) {
+                    append("\n")
+                    append(description)
+                }
             },
             style = Typography.bodyLarge
         )
@@ -117,46 +116,32 @@ private fun SelectOptionDialog(
     onDismissRequest: () -> Unit,
     onOptionItemSelected: (selectedItem: OptionItem) -> Unit
 ) {
-    Dialog(
-        onDismissRequest = onDismissRequest
-    ) {
-        val interactionSource = remember { MutableInteractionSource() }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
+    AiDictDialog(onDismissRequest) {
+        Card(
+            modifier = modifier
                 .clickable(
-                    indication = null,
-                    interactionSource = interactionSource,
-                    onClick = onDismissRequest
+                    enabled = false,
+                    onClick = {}
                 )
         ) {
-            Card(
-                modifier = modifier
-                    .clickable(
-                        enabled = false,
-                        onClick = {}
+            LazyColumn {
+                items(options) { option ->
+                    Text(
+                        modifier = Modifier
+                            .clickable(onClick = {
+                                onOptionItemSelected(option)
+                                onDismissRequest()
+                            })
+                            .padding(margin12)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        text = option.text,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium,
+                        overflow = TextOverflow.Ellipsis
                     )
-            ) {
-                LazyColumn {
-                    items(options) { option ->
-                        Text(
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    onOptionItemSelected(option)
-                                    onDismissRequest()
-                                })
-                                .padding(margin12)
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
-                            text = option.text,
-                            textAlign = TextAlign.Center,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.titleMedium,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = margin12))
-                    }
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = margin12))
                 }
             }
         }

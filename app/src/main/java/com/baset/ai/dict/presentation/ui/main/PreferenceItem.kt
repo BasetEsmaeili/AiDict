@@ -11,7 +11,8 @@ sealed interface PreferenceItem {
         override val id: String,
         val title: UiText,
         val description: UiText?,
-        val options: ImmutableList<OptionItem>
+        val options: ImmutableList<OptionItem>,
+        val onPreferenceOptionItemSelected: (OptionDialog, optionItem: OptionItem) -> Unit
     ) : PreferenceItem {
         override val type: String
             get() = "option_dialog"
@@ -21,7 +22,8 @@ sealed interface PreferenceItem {
         override val id: String,
         val checked: Boolean,
         val title: UiText,
-        val description: UiText?
+        val description: UiText?,
+        val onPreferenceSwitchCheckChange: (Switch) -> Unit
     ) : PreferenceItem {
         override val type: String
             get() = "switch"
@@ -32,7 +34,8 @@ sealed interface PreferenceItem {
         val title: UiText,
         val description: UiText?,
         val inputType: InputType,
-        val text: String?
+        val text: String?,
+        val onInputPreferenceDone: (Input, String) -> Unit
     ) : PreferenceItem {
         enum class InputType {
             Text, Number
@@ -40,5 +43,13 @@ sealed interface PreferenceItem {
 
         override val type: String
             get() = "input"
+    }
+
+    data class CopyRight(
+        override val id: String,
+        val onOpenProjectOnGithubClicked: () -> Unit
+    ) : PreferenceItem {
+        override val type: String
+            get() = "copyright"
     }
 }

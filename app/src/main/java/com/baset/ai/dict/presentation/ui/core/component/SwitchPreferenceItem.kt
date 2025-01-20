@@ -42,8 +42,10 @@ fun SwitchPreference(
                 ) {
                     append(tile)
                 }
-                append("\n")
-                append(description)
+                if (!description.isNullOrEmpty()) {
+                    append("\n")
+                    append(description)
+                }
             },
             style = Typography.bodyLarge
         )

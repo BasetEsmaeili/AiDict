@@ -91,25 +91,29 @@ class MainViewModel(
                                 selected = it.contentEquals(englishLevel, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI,
                         checked = deleteAfterShareToAnki,
                         title = UiText.StringResource(R.string.title_delete_after_share_to_anki),
-                        description = UiText.StringResource(R.string.description_delete_after_share_to_anki)
+                        description = UiText.StringResource(R.string.description_delete_after_share_to_anki),
+                        onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH,
                         checked = includeGoogleSearch,
                         title = UiText.StringResource(R.string.title_include_google_search),
-                        description = UiText.StringResource(R.string.description_include_google_search)
+                        description = UiText.StringResource(R.string.description_include_google_search),
+                        onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.WINDOW_SERVICE_ID,
                         checked = windowServiceEnabled,
                         title = UiText.StringResource(R.string.title_window_service),
-                        description = UiText.StringResource(R.string.description_window_service)
+                        description = UiText.StringResource(R.string.description_window_service),
+                        onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.MODEL_NAME_ID,
@@ -121,14 +125,16 @@ class MainViewModel(
                                 selected = it.contentEquals(modelName, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.API_KEY,
                         title = UiText.StringResource(R.string.title_api_key),
                         description = UiText.StringResource(R.string.description_api_key),
                         inputType = PreferenceItem.Input.InputType.Text,
-                        text = apiKey
+                        text = apiKey,
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.HARM_CATEGORY_HARASSMENT,
@@ -140,7 +146,8 @@ class MainViewModel(
                                 selected = it.contentEquals(harassment, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.HARM_CATEGORY_HATE_SPEECH,
@@ -152,7 +159,8 @@ class MainViewModel(
                                 selected = it.contentEquals(hateSpeech, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.HARM_CATEGORY_SEXUALLY_EXPLICIT,
@@ -164,7 +172,8 @@ class MainViewModel(
                                 selected = it.contentEquals(sexuallyExplicit, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.OptionDialog(
                         id = Constants.PreferencesKey.HARM_CATEGORY_DANGEROUS_CONTENT,
@@ -176,57 +185,69 @@ class MainViewModel(
                                 selected = it.contentEquals(dangerousContent, true),
                                 text = it
                             )
-                        }.toImmutableList()
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.REQUEST_TIME_OUT,
                         title = UiText.StringResource(R.string.title_request_timeout),
                         description = UiText.StringResource(R.string.description_request_timeout),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = requestTimeout.toString()
+                        text = requestTimeout.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.API_VERSION,
                         title = UiText.StringResource(R.string.title_api_version),
                         description = UiText.StringResource(R.string.description_api_version),
                         inputType = PreferenceItem.Input.InputType.Text,
-                        text = apiVersion
+                        text = apiVersion,
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.TEMPERATURE,
                         title = UiText.StringResource(R.string.title_temperature),
                         description = UiText.StringResource(R.string.description_temperature),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = temperature.toString()
+                        text = temperature.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.MAX_OUTPUT_TOKENS,
                         title = UiText.StringResource(R.string.title_max_output_tokens),
                         description = UiText.StringResource(R.string.description_max_output_tokens),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = maxOutputTokens.toString()
+                        text = maxOutputTokens.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.TOP_K,
                         title = UiText.StringResource(R.string.title_top_k),
                         description = UiText.StringResource(R.string.description_top_k),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = topK.toString()
+                        text = topK.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.TOP_P,
                         title = UiText.StringResource(R.string.title_top_p),
                         description = UiText.StringResource(R.string.description_top_p),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = topP.toString()
+                        text = topP.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
                         id = Constants.PreferencesKey.CANDIDATE_COUNT,
                         title = UiText.StringResource(R.string.title_candidate_count),
                         description = UiText.StringResource(R.string.description_candidate_count),
                         inputType = PreferenceItem.Input.InputType.Number,
-                        text = candidateCount.toString()
+                        text = candidateCount.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
                     ),
+                    PreferenceItem.CopyRight(
+                        id = "Copyright",
+                        onOpenProjectOnGithubClicked = ::onOpenProjectOnGithubClicked
+                    )
                 )
             )
         }.stateIn(

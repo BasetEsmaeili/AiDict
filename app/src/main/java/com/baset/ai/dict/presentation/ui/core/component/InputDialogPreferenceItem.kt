@@ -85,8 +85,10 @@ fun InputPreference(
                 ) {
                     append(title)
                 }
-                append("\n")
-                append(description)
+                if (!description.isNullOrEmpty()) {
+                    append("\n")
+                    append(description)
+                }
             },
             style = Typography.bodyLarge
         )

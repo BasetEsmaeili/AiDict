@@ -67,10 +67,6 @@ fun MainRoute(
         modifier = modifier,
         preferencesUiState = uiState.preferencesUiState,
         cards = uiState.cards,
-        onPreferenceSwitchCheckChange = remember(mainViewModel) { mainViewModel::onPreferenceSwitchCheckChange },
-        onPreferenceOptionItemSelected = remember(mainViewModel) { mainViewModel::onPreferenceOptionItemSelected },
-        onInputPreferenceDone = remember(mainViewModel) { mainViewModel::onInputPreferenceDone },
-        onOpenProjectOnGithubClicked = remember(mainViewModel) { mainViewModel::onOpenProjectOnGithubClicked },
         onSwipedToShareCardToAnki = remember(mainViewModel) { mainViewModel::onSwipedToShareCardToAnki },
         onSwipedToDeleteCard = remember(mainViewModel) { mainViewModel::onSwipedToDeleteCard }
     )
@@ -82,10 +78,6 @@ private fun MainScreen(
     modifier: Modifier = Modifier,
     preferencesUiState: PreferencesUiState,
     cards: ImmutableList<Card>,
-    onPreferenceSwitchCheckChange: (PreferenceItem) -> Unit,
-    onPreferenceOptionItemSelected: (preferenceItem: PreferenceItem, optionItem: OptionItem) -> Unit,
-    onInputPreferenceDone: (PreferenceItem, String) -> Unit,
-    onOpenProjectOnGithubClicked: () -> Unit,
     onSwipedToShareCardToAnki: (Card) -> Boolean,
     onSwipedToDeleteCard: (Card) -> Boolean
 ) {
@@ -126,12 +118,8 @@ private fun MainScreen(
                 onDismissRequest = {
                     showOptionsBottomSheet = false
                 }) {
-                PreferencesModalBottomSheetContent(
-                    preferenceItems = preferencesUiState.preferenceItems,
-                    onPreferenceSwitchCheckChange = onPreferenceSwitchCheckChange,
-                    onPreferenceOptionItemSelected = onPreferenceOptionItemSelected,
-                    onInputPreferenceDone = onInputPreferenceDone,
-                    onOpenProjectOnGithubClicked = onOpenProjectOnGithubClicked
+                PreferencesList(
+                    preferenceItems = preferencesUiState.preferenceItems
                 )
             }
         }
@@ -246,10 +234,6 @@ private fun MainPreview() {
     MainScreen(
         preferencesUiState = PreferencesUiState(),
         cards = persistentListOf(),
-        onPreferenceSwitchCheckChange = {},
-        onPreferenceOptionItemSelected = { _, _ -> },
-        onInputPreferenceDone = { _, _ -> },
-        onOpenProjectOnGithubClicked = {},
         onSwipedToDeleteCard = { _ -> true },
         onSwipedToShareCardToAnki = { _ -> true }
     )

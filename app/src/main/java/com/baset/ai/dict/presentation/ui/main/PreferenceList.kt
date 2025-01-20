@@ -36,13 +36,9 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun PreferencesModalBottomSheetContent(
+fun PreferencesList(
     modifier: Modifier = Modifier,
-    preferenceItems: ImmutableList<PreferenceItem>,
-    onPreferenceSwitchCheckChange: (PreferenceItem) -> Unit,
-    onPreferenceOptionItemSelected: (preferenceItem: PreferenceItem, optionItem: OptionItem) -> Unit,
-    onInputPreferenceDone: (PreferenceItem, String) -> Unit,
-    onOpenProjectOnGithubClicked: () -> Unit
+    preferenceItems: ImmutableList<PreferenceItem>
 ) {
     LazyColumn(
         modifier = modifier,
@@ -61,9 +57,9 @@ fun PreferencesModalBottomSheetContent(
                             .wrapContentHeight(),
                         checked = item.checked,
                         tile = item.title.asString(),
-                        description = item.description?.asString(),
+                        description = item.description?.asString().orEmpty(),
                         onCheckedChange = {
-                            onPreferenceSwitchCheckChange(item)
+                            item.onPreferenceSwitchCheckChange(item)
                         }
                     )
                 }
@@ -74,10 +70,10 @@ fun PreferencesModalBottomSheetContent(
                             .fillMaxWidth()
                             .wrapContentHeight(),
                         title = item.title.asString(),
-                        description = item.description?.asString(),
+                        description = item.description?.asString().orEmpty(),
                         options = item.options,
                         onOptionItemSelected = {
-                            onPreferenceOptionItemSelected(item, it)
+                            item.onPreferenceOptionItemSelected(item, it)
                         }
                     )
                 }
@@ -88,12 +84,43 @@ fun PreferencesModalBottomSheetContent(
                             .fillMaxWidth()
                             .wrapContentHeight(),
                         title = item.title.asString(),
-                        description = item.description?.asString(),
+                        description = item.description?.asString().orEmpty(),
                         inputType = item.inputType,
                         value = item.text,
                         onDone = {
-                            onInputPreferenceDone(item, it)
+                            item.onInputPreferenceDone(item, it)
                         }
+                    )
+                }
+
+                is PreferenceItem.CopyRight -> {
+                    Spacer(modifier = Modifier.size(margin32))
+                    IconButton(onClick = item.onOpenProjectOnGithubClicked) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_github_logo),
+                            contentDescription = stringResource(R.string.content_description_github)
+                        )
+                    }
+                    Text(
+                        text = buildAnnotatedString {
+                            append(stringResource(R.string.label_code_available_on))
+                            append(Constants.SPACE)
+                            withLink(
+                                LinkAnnotation.Url(
+                                    Constants.Intent.GITHUB_URI,
+                                    styles = TextLinkStyles(
+                                        style = SpanStyle(
+                                            color = colorResource(
+                                                R.color.purple_500
+                                            )
+                                        )
+                                    )
+                                )
+                            ) {
+                                append(stringResource(R.string.label_github))
+                            }
+                        },
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -101,48 +128,21 @@ fun PreferencesModalBottomSheetContent(
                 Spacer(modifier = Modifier.size(margin16))
             }
         }
-        item {
-            Spacer(modifier = Modifier.size(margin32))
-            IconButton(onClick = onOpenProjectOnGithubClicked) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_github_logo),
-                    contentDescription = stringResource(R.string.content_description_github)
-                )
-            }
-            Text(
-                text = buildAnnotatedString {
-                    append(stringResource(R.string.label_code_available_on))
-                    append(Constants.SPACE)
-                    withLink(
-                        LinkAnnotation.Url(
-                            Constants.Intent.GITHUB_URI,
-                            styles = TextLinkStyles(style = SpanStyle(color = colorResource(R.color.purple_500)))
-                        )
-                    ) {
-                        append(stringResource(R.string.label_github))
-                    }
-                },
-                textAlign = TextAlign.Center
-            )
-        }
     }
 }
 
 @Preview
 @Composable
 private fun PreferencesModalBottomSheetContentPreview() {
-    PreferencesModalBottomSheetContent(
+    PreferencesList(
         preferenceItems = persistentListOf(
             PreferenceItem.Switch(
                 "test_switch",
                 checked = true,
                 title = UiText.StringResource(R.string.title_window_service),
-                description = UiText.StringResource(R.string.description_window_service)
+                description = UiText.StringResource(R.string.description_window_service),
+                onPreferenceSwitchCheckChange = {}
             )
-        ),
-        onPreferenceSwitchCheckChange = {},
-        onPreferenceOptionItemSelected = { _: PreferenceItem, _: OptionItem -> },
-        onInputPreferenceDone = { _, _ -> },
-        onOpenProjectOnGithubClicked = {}
+        )
     )
 }

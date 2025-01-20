@@ -17,6 +17,7 @@ import com.baset.ai.dict.presentation.ui.ai.model.PickedMedia
 import com.baset.ai.dict.presentation.ui.ai.model.TextType
 import com.baset.ai.dict.presentation.ui.ai.model.UiMode
 import com.baset.ai.dict.presentation.ui.core.model.UiText
+import com.baset.ai.dict.presentation.ui.main.PreferenceItem
 import com.baset.ai.dict.presentation.util.ClipboardManager
 import com.baset.ai.dict.presentation.util.IntentResolver
 import com.baset.ai.dict.presentation.util.NetworkMonitor
@@ -33,12 +34,19 @@ import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.Tool
 import com.google.ai.client.generativeai.type.content
 import com.mohamedrejeb.richeditor.model.RichTextState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -77,6 +85,7 @@ class AiViewModel(
         SharingStarted.Eagerly,
         NetworkMonitor.State.Unknown
     )
+
     val windowServiceEnabledPreferenceState = preferenceRepository.getPreference(
         Constants.PreferencesKey.keyWindowServiceEnabled,
         true
@@ -85,20 +94,29 @@ class AiViewModel(
         SharingStarted.WhileSubscribed(Constants.FLOW_TIMEOUT),
         true
     )
+    private val askOptionItems =
+        MutableStateFlow<PersistentMap<String, PreferenceItem>>(persistentMapOf())
     val uiState =
         combine(
             pickedImageState,
             makeFullScreenState,
-            uiModeState
-        ) { pickedImage, makeFullScreenState, uiMode ->
+            uiModeState,
+            askOptionItems
+        ) { pickedImage,
+            makeFullScreenState,
+            uiMode,
+            askOptionItems ->
             UiState(
                 headlineTitle = headlineTitle,
                 commandTextState = commandTextState,
                 answerTextState = answerTextState,
                 pickedMedia = pickedImage,
                 makeFullScreen = makeFullScreenState,
-                uiMode = uiMode
+                uiMode = uiMode,
+                askOptionItems = askOptionItems.values.toPersistentList()
             )
+        }.onStart {
+            loadAskOptionItems()
         }.stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(Constants.FLOW_TIMEOUT), UiState(
                 headlineTitle = headlineTitle,
@@ -128,7 +146,35 @@ class AiViewModel(
             null
         )
 
+    private fun loadAskOptionItems() {
+        viewModelScope.launch {
+            val preferencesMap = preferenceRepository.getAllPreferences().first()
+            askOptionItems.value = persistentMapOf(
+                Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH to PreferenceItem.Switch(
+                    id = Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH,
+                    checked = (preferencesMap[Constants.PreferencesKey.keyIncludeGoogleSearch] as? Boolean)
+                        ?: Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH_DEFAULT_VALUE,
+                    title = UiText.StringResource(R.string.title_include_google_search),
+                    description = null,
+                    onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
+                )
+            )
+        }
+    }
+
+    private fun onPreferenceSwitchCheckChange(preferenceItem: PreferenceItem.Switch) {
+        askOptionItems.update {
+            it.mutate { preferenceItems ->
+                preferenceItems[preferenceItem.id] =
+                    preferenceItem.copy(checked = preferenceItem.checked.not())
+            }
+        }
+    }
+
     private fun generateTools(preferencesMap: Map<Preferences.Key<*>, Any>): List<Tool> {
+        // TODO: I am waiting for the Gemini SDK's maintainers to
+        //  merge https://github.com/google-gemini/generative-ai-android/pull/232 pull request.
+        //  this pull request let me complete the include Google search in results feature.
         return listOf()
     }
 
@@ -259,10 +305,8 @@ class AiViewModel(
                     Constants.PreferencesKey.keyEnglishLevel,
                     Constants.PreferencesKey.defaultEnglishLevel
                 ).first()
-                val includeGoogleSearch = preferenceRepository.getPreference(
-                    Constants.PreferencesKey.keyIncludeGoogleSearch,
-                    Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH_DEFAULT_VALUE
-                ).first()
+                val includeGoogleSearch =
+                    (askOptionItems.value[Constants.PreferencesKey.INCLUDE_GOOGLE_SEARCH] as PreferenceItem.Switch).checked
                 val content = content {
                     if (!englishLevel.contentEquals(
                             Constants.PreferencesKey.defaultEnglishLevel,
@@ -364,6 +408,7 @@ class AiViewModel(
         val answerTextState: RichTextState,
         val pickedMedia: PickedMedia? = null,
         val makeFullScreen: Boolean = false,
-        val uiMode: UiMode = UiMode.Ask
+        val uiMode: UiMode = UiMode.Ask,
+        val askOptionItems: ImmutableList<PreferenceItem> = persistentListOf()
     )
 }
