@@ -52,6 +52,7 @@ Currently, AiDict is in its early development phase. The project was initially b
 - 🎤 **Implement speech-to-text service**
 - 🔊 **Read answers aloud for better pronunciation learning**
 - 🔍 **Add a search feature to the home screen**
+- 🛠️ **Fix UI bugs due to time constraints**
 
 ## 🤝 Contribution
 
