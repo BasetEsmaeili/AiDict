@@ -11,10 +11,11 @@ coreKtx = "1.15.0"
 kotlinxCollectionsImmutable = "0.3.6"
 kotlinxCoroutinesAndroid = "1.10.1"
 activityCompose = "1.10.0"
-composeBom = "2025.01.00"
-generativeai = "0.9.0"
+composeBom = "2025.01.01"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
-lifecycle_version = "2.9.0-alpha08"
+ktorClientOkhttpVersion = "3.0.3"
+lifecycle_version = "2.9.0-alpha09"
+openaiClientBomVersion = "4.0.1"
 richeditorComposeVersion = "1.0.0-rc10"
 work_version = "2.10.0"
 activity_version = "1.10.0"
@@ -35,7 +36,6 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
-generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroidxComposeVersion" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koinAndroidxComposeVersion" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidxComposeVersion" }
@@ -65,6 +65,8 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_version" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room_version" }
 richeditor-compose = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "richeditorComposeVersion" }
+openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClientBomVersion" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttpVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

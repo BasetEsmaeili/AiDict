@@ -21,12 +21,10 @@
     <string name="content_description_send_command">Send AI command</string>
     <string name="error_check_network">Please check your internet connection!</string>
     <string name="label_none">None!</string>
-    <string name="title_model_name">Model name</string>
     <string name="title_your_english_level">Your english level</string>
-    <string name="description_model_name">"The AI model that runs your commands."</string>
     <string name="label_enter_value">Enter value:</string>
     <string name="title_api_key">Api key</string>
-    <string name="description_api_key">Your Gemini developer console api key.</string>
+    <string name="description_api_key">Your OpenAI or DeepSeek developer console api key.</string>
     <string name="label_submit">Submit</string>
     <string name="error_model_config">Error in configurations, please make them correct.</string>
     <string name="content_description_try_again">Try again</string>
@@ -43,35 +41,60 @@
     <string name="content_description_swipe_to_delete_card">Swipe to delete card.</string>
     <string name="content_description_swipe_to_add_anki">Swipe to create a card in Anki.</string>
     <string name="description_english_level">Specify your English knowledge level.</string>
-    <string name="command_my_english_level_is">My English level is:</string>
-    <string name="command_do_not_mention_my_english_level">Do not mention my English level in response, just prepare the response based on it.</string>
-    <string name="title_harm_category_harassment">Harassment</string>
-    <string name="description_harm_category_harassment">Negative or harmful comments targeting identity and/or protected attributes.</string>
-    <string name="title_harm_category_hate_speech">Hate speech</string>
-    <string name="description_harm_category_hate_speech">Content that is rude, disrespectful, or profane.</string>
-    <string name="title_harm_category_sexually_explicit">Sexually explicit</string>
-    <string name="description_harm_category_sexually_explicit">Contains references to sexual acts or other lewd content.</string>
-    <string name="title_harm_category_dangerous_content">Dangerous</string>
-    <string name="description_harm_category_dangerous_content">Promotes, facilitates, or encourages harmful acts.</string>
     <string name="title_request_timeout">Request timeout</string>
     <string name="description_request_timeout">Commands request timeout in milliseconds.</string>
-    <string name="title_api_version">API version</string>
-    <string name="description_api_version">Gemini API version</string>
     <string name="title_temperature">Temperature</string>
     <string name="description_temperature">The temperature controls the degree of randomness in token selection. The temperature is used for sampling during response generation, which occurs when topP and topK are applied. Lower temperatures are good for prompts that require a more deterministic or less open-ended response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 is deterministic, meaning that the highest probability response is always selected.</string>
-    <string name="title_max_output_tokens">Max output tokens</string>
-    <string name="description_max_output_tokens">Specifies the maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60–80 words.</string>
-    <string name="title_top_k">topK</string>
-    <string name="description_top_k">The topK parameter changes how the model selects tokens for output. A topK of 1 means the selected token is the most probable among all the tokens in the model\'s vocabulary (also called greedy decoding), while a topK of 3 means that the next token is selected from among the 3 most probable using the temperature. For each token selection step, the topK tokens with the highest probabilities are sampled. Tokens are then further filtered based on topP with the final token selected using temperature sampling</string>
     <string name="title_top_p">topP</string>
     <string name="description_top_p">The topP parameter changes how the model selects tokens for output. Tokens are selected from the most to least probable until the sum of their probabilities equals the topP value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the topP value is 0.5, then the model will select either A or B as the next token by using the temperature and exclude C as a candidate. The default topP value is 0.95.</string>
-    <string name="title_candidate_count">candidate count</string>
-    <string name="description_candidate_count">a parameter that allows you to specify how many different response options you want the model to generate for a single query</string>
-    <string name="label_my_command">My command is:</string>
     <string name="title_delete_after_share_to_anki">Delete after share to Anki</string>
     <string name="description_delete_after_share_to_anki">Delete temporary card after shared with Anki app.</string>
-    <string name="title_include_google_search">Include Google search</string>
-    <string name="description_include_google_search">AI searches in Google for better accurate responses.</string>
-    <string name="command_include_google_search">Verify your response with external sources like Google Search.</string>
-    <string name="command_do_not_mention_that_your_answer_is_based_on_google">Do not mention in response that your answer is based on a Google search.</string>
+    <string name="title_your_ai_service_provider">AI service provider</string>
+    <string name="description_your_ai_service_provider">You can choose between some AI service providers.</string>
+    <string name="title_use_assistants">Use Assistants</string>
+    <string name="description_use_assistants">OpenAI Assistants are conversational AI agents that leverage context-aware language models to generate human-like, interactive responses.</string>
+    <string name="title_default_instructions">System instructions</string>
+    <string name="description_default_instructions">System instructions set the foundational guidelines for the AI’s behavior and tone throughout the entire conversation.</string>
+    <string name="default_instructions">
+        Instructions for AI:
+Word/Phrase Meaning → Generate an Anki card (user preferences below).
+Grammar/Explanations → Answer directly (no Anki card).
+Exercises → Review, correct, explain, and suggest improvements.
+
+Anki Card Format:
+
+Front: Question/hint for recall.
+Back:
+Definition (simple &amp; clear)
+Synonyms &amp; Antonyms
+Pronunciation (IPA)
+Mnemonics (memory trick)
+Examples (real-world usage)
+Idioms &amp; Collocations
+Persian Meaning
+Word Family (noun, verb, adj, adv)
+Quick Quiz (MCQ or fill-in-the-blank)
+Tip (relatable learning aid)
+
+Grammar &amp; Explanations:
+Explain simply with examples.
+Break down complex concepts.
+Avoid Anki card unless requested.
+
+Exercise Assistance:
+Correct mistakes with explanations.
+Improve clarity &amp; fluency.
+Provide better phrasing if needed.
+
+User-Specific Learning Preferences:
+
+Spaced repetition &amp; active recall for vocabulary.
+Contextual learning (examples, idioms, collocations).
+Persian translations in Anki cards.
+Concise grammar explanations.
+Mnemonics for better memory.
+Detailed feedback on exercises.
+Goal:
+Efficient, structured, and engaging responses while minimizing token usage.
+    </string>
 </resources>

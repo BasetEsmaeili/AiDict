@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -39,8 +37,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,7 +80,6 @@ import coil3.compose.SubcomposeAsyncImage
 import com.baset.ai.dict.R
 import com.baset.ai.dict.presentation.ui.ai.model.PickedMedia
 import com.baset.ai.dict.presentation.ui.ai.model.UiMode
-import com.baset.ai.dict.presentation.ui.core.component.AiDictDialog
 import com.baset.ai.dict.presentation.ui.core.modifier.animatedGradient
 import com.baset.ai.dict.presentation.ui.core.modifier.conditional
 import com.baset.ai.dict.presentation.ui.core.theme.AskBorderRadius
@@ -107,15 +102,11 @@ import com.baset.ai.dict.presentation.ui.core.theme.margin16
 import com.baset.ai.dict.presentation.ui.core.theme.margin4
 import com.baset.ai.dict.presentation.ui.core.theme.margin8
 import com.baset.ai.dict.presentation.ui.core.theme.pickedMediaRadius
-import com.baset.ai.dict.presentation.ui.main.PreferenceItem
-import com.baset.ai.dict.presentation.ui.main.PreferencesList
 import com.baset.ai.dict.presentation.util.LifecycleAwareSpeechRecognizer
 import com.baset.ai.dict.presentation.util.randomStringUUID
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.BasicRichTextEditor
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.android.awaitFrame
 
 @Composable
@@ -194,7 +185,6 @@ fun AiRoute(
         isSpeechToTextSupported = isTextToSpeechSupported,
         onOutSideClicked = onOutSideClicked,
         uiMode = uiState.uiMode,
-        askOptionItems = uiState.askOptionItems,
         onAskCriteriaClicked = remember(viewModel) { viewModel::onAskCriteriaClicked },
         onMakeFulScreenClicked = remember(viewModel) { viewModel::onMakeFulScreenClicked },
         onTextToSpeechClicked = {
@@ -229,7 +219,6 @@ private fun AiScreen(
     pickedMedia: PickedMedia?,
     isSpeechToTextSupported: Boolean,
     uiMode: UiMode,
-    askOptionItems: ImmutableList<PreferenceItem>,
     onOutSideClicked: () -> Unit,
     onAskCriteriaClicked: () -> Unit,
     onMakeFulScreenClicked: () -> Unit,
@@ -281,7 +270,6 @@ private fun AiScreen(
             pickedMedia = pickedMedia,
             isSpeechToTextSupported = isSpeechToTextSupported,
             uiMode = uiMode,
-            askOptionItems = askOptionItems,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onRemovePickedMediaClicked = onRemovePickedMediaClicked,
             onTextToSpeechClicked = onTextToSpeechClicked,
@@ -306,7 +294,6 @@ private fun AskAiCard(
     pickedMedia: PickedMedia?,
     isSpeechToTextSupported: Boolean,
     uiMode: UiMode,
-    askOptionItems: ImmutableList<PreferenceItem>,
     onMakeFulScreenClicked: () -> Unit,
     onRemovePickedMediaClicked: () -> Unit,
     onTextToSpeechClicked: () -> Unit,
@@ -323,7 +310,6 @@ private fun AskAiCard(
         is UiMode.Answer -> AnswerMode(
             modifier = modifier,
             answerState = answerState,
-            askOptionItems = askOptionItems,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onGoogleResultClicked = onGoogleResultClicked,
             onShareTextClicked = onShareTextClicked,
@@ -338,7 +324,6 @@ private fun AskAiCard(
             headlineTitle = headlineTitle,
             commandTextState = commandTextState,
             pickedMedia = pickedMedia,
-            askOptionItems = askOptionItems,
             isSpeechToTextSupported = isSpeechToTextSupported,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onRemovePickedMediaClicked = onRemovePickedMediaClicked,
@@ -349,14 +334,12 @@ private fun AskAiCard(
 
         is UiMode.Loading -> LoadingMode(
             modifier = modifier,
-            askOptionItems = askOptionItems,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
 
         is UiMode.Error -> ErrorMode(
             modifier = modifier,
             answerState = answerState,
-            askOptionItems = askOptionItems,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onTryAgainClicked = onSendCommandClicked
         )
@@ -367,7 +350,6 @@ private fun AskAiCard(
 private fun ErrorMode(
     modifier: Modifier,
     answerState: RichTextState,
-    askOptionItems: ImmutableList<PreferenceItem>,
     onMakeFulScreenClicked: () -> Unit,
     onTryAgainClicked: () -> Unit
 ) {
@@ -400,8 +382,6 @@ private fun ErrorMode(
                     height = Dimension.wrapContent
                 },
             headlineTitle = "",
-            askOptionItems = askOptionItems,
-            askOptionsEnabled = false,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
 
@@ -464,7 +444,6 @@ private fun ErrorMode(
 private fun AnswerMode(
     modifier: Modifier,
     answerState: RichTextState,
-    askOptionItems: ImmutableList<PreferenceItem>,
     onMakeFulScreenClicked: () -> Unit,
     onGoogleResultClicked: () -> Unit,
     onShareTextClicked: () -> Unit,
@@ -503,8 +482,6 @@ private fun AnswerMode(
                     height = Dimension.wrapContent
                 },
             headlineTitle = "",
-            askOptionItems = askOptionItems,
-            askOptionsEnabled = false,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
 
@@ -706,7 +683,6 @@ private fun AskMode(
     headlineTitle: String,
     commandTextState: TextFieldState,
     pickedMedia: PickedMedia?,
-    askOptionItems: ImmutableList<PreferenceItem>,
     isSpeechToTextSupported: Boolean,
     onMakeFulScreenClicked: () -> Unit,
     onRemovePickedMediaClicked: () -> Unit,
@@ -745,8 +721,6 @@ private fun AskMode(
                     height = Dimension.wrapContent
                 },
             headlineTitle = headlineTitle,
-            askOptionItems = askOptionItems,
-            askOptionsEnabled = true,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
         Spacer(
@@ -848,7 +822,6 @@ private fun AskMode(
 @Composable
 private fun LoadingMode(
     modifier: Modifier,
-    askOptionItems: ImmutableList<PreferenceItem>,
     onMakeFulScreenClicked: () -> Unit
 ) {
     ConstraintLayout(
@@ -874,8 +847,6 @@ private fun LoadingMode(
                     height = Dimension.wrapContent
                 },
             headlineTitle = "",
-            askOptionItems = askOptionItems,
-            askOptionsEnabled = false,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
         Box(
@@ -1014,21 +985,12 @@ private fun CommandInput(
 private fun HeaderSection(
     modifier: Modifier = Modifier,
     headlineTitle: String,
-    askOptionItems: ImmutableList<PreferenceItem>,
-    askOptionsEnabled: Boolean,
     onMakeFulScreenClicked: () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        var showOptionsDialog by remember { mutableStateOf(false) }
-        if (showOptionsDialog) {
-            AskOptionsDialog(
-                onDismissRequest = { showOptionsDialog = false },
-                preferenceItems = askOptionItems
-            )
-        }
         Icon(
             modifier = Modifier.size(appLogoSizeForAskAi),
             painter = painterResource(R.drawable.ic_logo),
@@ -1044,21 +1006,6 @@ private fun HeaderSection(
             style = Typography.titleSmall,
             textAlign = TextAlign.Start
         )
-        if (askOptionsEnabled) {
-            IconButton(
-                modifier = Modifier
-                    .padding(horizontal = margin12)
-                    .size(appLogoSizeForAskAi),
-                onClick = {
-                    showOptionsDialog = true
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(R.string.content_description_full_screen)
-                )
-            }
-        }
         IconButton(
             modifier = Modifier.size(appLogoSizeForAskAi),
             onClick = onMakeFulScreenClicked
@@ -1066,31 +1013,6 @@ private fun HeaderSection(
             Icon(
                 painter = painterResource(R.drawable.ic_make_full_screen),
                 contentDescription = stringResource(R.string.content_description_full_screen)
-            )
-        }
-    }
-}
-
-@Composable
-private fun AskOptionsDialog(
-    onDismissRequest: () -> Unit,
-    preferenceItems: ImmutableList<PreferenceItem>
-) {
-    AiDictDialog(onDismissRequest = onDismissRequest) {
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-        Card(
-            modifier = Modifier
-                .padding(margin16)
-                .fillMaxWidth()
-                .height(screenWidth / 2)
-                .clickable(
-                    enabled = false,
-                    onClick = {}
-                )
-        ) {
-            PreferencesList(
-                modifier = Modifier.fillMaxSize(),
-                preferenceItems = preferenceItems
             )
         }
     }
@@ -1170,7 +1092,6 @@ private fun AiScreenPreview() {
         pickedMedia = null,
         isSpeechToTextSupported = false,
         uiMode = UiMode.Ask,
-        askOptionItems = persistentListOf(),
         onMakeFulScreenClicked = {},
         onRemovePickedMediaClicked = {},
         onTextToSpeechClicked = {},

@@ -153,7 +153,7 @@ private fun InputDialog(
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     value = textFieldValue,
-                    singleLine = true,
+                    maxLines = 10,
                     keyboardOptions = KeyboardOptions(
                         autoCorrectEnabled = false,
                         keyboardType = when (inputType) {

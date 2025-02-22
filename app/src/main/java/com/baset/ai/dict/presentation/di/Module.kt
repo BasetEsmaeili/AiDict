@@ -20,7 +20,8 @@ val presentationModule = lazyModule {
         MainViewModel(
             get(),
             IntentResolver(activity),
-            get()
+            get(),
+            ResourceProvider(activity)
         )
     }
     viewModel { (activity: Activity) ->
