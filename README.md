@@ -48,11 +48,13 @@ Currently, AiDict is in its early development phase. The project was initially b
 ## 🔮 Future Plans
 
 - 🔄 **Complete transformation from Gemini to OpenAI and DeepSeek** (In progress)
+- 💰 **Utilize OpenAI batch service to reduce costs**
+- 🔗 **Integrate sources and search functionality for more accurate AI results**
+- 🎯 **Fine-tune AI models to save tokens and improve accuracy**
 - 📂 **Import and process words from a CSV file**
 - 🎤 **Implement speech-to-text service**
 - 🔊 **Read answers aloud for better pronunciation learning**
-- 🔍 **Add a search feature to the home screen**
-- 🛠️ **Fix UI bugs due to time constraints**
+- 🔍 **Add AI search feature to the home screen**
 
 ## 🤝 Contribution
 
