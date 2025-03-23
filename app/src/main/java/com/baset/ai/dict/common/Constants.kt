@@ -51,10 +51,6 @@ object Constants {
         const val DEFAULT_INSTRUCTIONS = "default_instructions"
         val keyDefaultInstructions = stringPreferencesKey(DEFAULT_INSTRUCTIONS)
 
-        const val USE_ASSISTANTS = "use_assistants"
-        val keyUseAssistants = booleanPreferencesKey(USE_ASSISTANTS)
-        const val USE_ASSISTANTS_DEFAULT_VALUE = true
-
         const val SELECTED_AI_MODEL = "selected_ai_model"
         val keySelectedAiModel = stringPreferencesKey(SELECTED_AI_MODEL)
 
@@ -87,7 +83,6 @@ object Constants {
             DEEP_SEEK
         )
         const val DEEP_SEEK_BASE_URL = "https://api.deepseek.com"
-        const val ASSISTANT_NAME = "AiDict"
     }
 
     object Intent {

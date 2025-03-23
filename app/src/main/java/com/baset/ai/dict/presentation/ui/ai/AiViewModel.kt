@@ -7,10 +7,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.assistant.Assistant
-import com.aallam.openai.api.assistant.AssistantId
-import com.aallam.openai.api.assistant.AssistantRequest
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatResponseFormat
@@ -65,7 +61,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(BetaOpenAI::class)
 class AiViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val resourceProvider: ResourceProvider,
@@ -309,10 +304,6 @@ class AiViewModel(
         pickedImageState.value?.let { pickedMedia ->
             attachedMediaByteArray = uriConverter.toByteArray(pickedMedia.pickedMedia)
         }
-        val useAssistants = preferenceRepository.getPreference(
-            Constants.PreferencesKey.keyUseAssistants,
-            Constants.PreferencesKey.USE_ASSISTANTS_DEFAULT_VALUE
-        ).first()
         val temperature = preferenceRepository.getPreference(
             Constants.PreferencesKey.keyTemperature,
             Constants.PreferencesKey.TEMPERATURE_DEFAULT_VALUE
@@ -330,56 +321,31 @@ class AiViewModel(
             Constants.PreferencesKey.keyUniqueId,
             ""
         ).first().ifEmpty { null }
-        if (useAssistants) {
-//            val assistant =
-//                openAI.assistantOrCreate(
-//                    id = AssistantId(Constants.DefaultContent.ASSISTANT_NAME),
-//                    request = AssistantRequest(
-//                        model =,
-//                        name = Constants.DefaultContent.ASSISTANT_NAME,
-//                        instructions = defaultInstructions,
-//                        temperature = temperature,
-//                        topP = topP,
-//                        responseFormat = AssistantResponseFormat.TEXT
-//                    )
-//                )
-//            val thread = openAI.thread()
-//            openAI.message(thread.id)
-        } else {
-            val result = openAI.chatCompletion(
-                request = ChatCompletionRequest(
-                    model = ModelId(selectedAiModel.value),
-                    messages = listOf(
-                        ChatMessage(
-                            role = ChatRole.System,
-                            content = defaultInstructions
-                        ),
-                        ChatMessage(
-                            role = ChatRole.User,
-                            content = commandTextState.text.toString()
-                        )
+        val result = openAI.chatCompletion(
+            request = ChatCompletionRequest(
+                model = ModelId(selectedAiModel.value),
+                messages = listOf(
+                    ChatMessage(
+                        role = ChatRole.System,
+                        content = defaultInstructions
                     ),
-                    temperature = temperature,
-                    topP = topP,
-                    maxCompletionTokens = maxCompletionTokens,
-                    n = Constants.ONE,
-                    user = uniqueId,
-                    responseFormat = ChatResponseFormat.Text
-                )
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = commandTextState.text.toString()
+                    )
+                ),
+                temperature = temperature,
+                topP = topP,
+                maxCompletionTokens = maxCompletionTokens,
+                n = Constants.ONE,
+                user = uniqueId,
+                responseFormat = ChatResponseFormat.Text
             )
-            result.choices.firstOrNull()?.let { choice ->
-                typeAnswer(choice.message.content.orEmpty())
-            }
+        )
+        result.choices.firstOrNull()?.let { choice ->
+            typeAnswer(choice.message.content.orEmpty())
         }
         uiModeState.value = UiMode.Answer
-    }
-
-
-    private suspend fun OpenAI.assistantOrCreate(
-        id: AssistantId,
-        request: AssistantRequest
-    ): Assistant {
-        return assistant(id = id) ?: assistant(request)
     }
 
     private fun typeAnswer(text: String) {

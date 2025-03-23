@@ -56,9 +56,6 @@ class MainViewModel(
                 ?: Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
             val host = (preferencesMap[Constants.PreferencesKey.keyHost] as? String)
                 ?: Constants.PreferencesKey.defaultHost
-            val useAssistantsEnabled: Boolean =
-                (preferencesMap[Constants.PreferencesKey.keyUseAssistants] as? Boolean)
-                    ?: Constants.PreferencesKey.USE_ASSISTANTS_DEFAULT_VALUE
             val defaultInstructions = resourcesProvider.getString(R.string.default_instructions)
             val maxCompletionTokens =
                 (preferencesMap[Constants.PreferencesKey.keyMaxCompletionTokens] as? Int)
@@ -90,13 +87,6 @@ class MainViewModel(
                         checked = windowServiceEnabled,
                         title = UiText.StringResource(R.string.title_window_service),
                         description = UiText.StringResource(R.string.description_window_service),
-                        onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
-                    ),
-                    PreferenceItem.Switch(
-                        id = Constants.PreferencesKey.USE_ASSISTANTS,
-                        checked = useAssistantsEnabled,
-                        title = UiText.StringResource(R.string.title_use_assistants),
-                        description = UiText.StringResource(R.string.description_use_assistants),
                         onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
                     ),
                     PreferenceItem.Input(
@@ -208,13 +198,6 @@ class MainViewModel(
                 Constants.PreferencesKey.DELETE_AFTER_SHARE_TO_ANKI -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyDeleteAfterShareToAnki,
-                        (preferenceItem as PreferenceItem.Switch).checked.not()
-                    )
-                }
-
-                Constants.PreferencesKey.USE_ASSISTANTS -> {
-                    preferenceRepository.putPreference(
-                        Constants.PreferencesKey.keyUseAssistants,
                         (preferenceItem as PreferenceItem.Switch).checked.not()
                     )
                 }

@@ -51,8 +51,6 @@
     <string name="description_delete_after_share_to_anki">Delete temporary card after shared with Anki app.</string>
     <string name="title_your_ai_service_provider">AI service provider</string>
     <string name="description_your_ai_service_provider">You can choose between some AI service providers.</string>
-    <string name="title_use_assistants">Use Assistants</string>
-    <string name="description_use_assistants">OpenAI Assistants are conversational AI agents that leverage context-aware language models to generate human-like, interactive responses.</string>
     <string name="title_default_instructions">System instructions</string>
     <string name="description_default_instructions">System instructions set the foundational guidelines for the AI’s behavior and tone throughout the entire conversation.</string>
     <string name="default_instructions">
