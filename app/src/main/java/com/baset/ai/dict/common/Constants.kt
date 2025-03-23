@@ -2,15 +2,18 @@ package com.baset.ai.dict.common
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.baset.ai.dict.common.Constants.DefaultContent.englishLevels
 import com.baset.ai.dict.common.Constants.DefaultContent.hosts
 
 object Constants {
+    const val ONE = 1
     const val FLOW_TIMEOUT = 5000L
     const val DIALOG_DISMISS = 150L
     const val SPACE = " "
+    const val UNDERLINE = "_"
 
     object PreferencesKey {
         const val WINDOW_SERVICE_ID = "window_service_enabled"
@@ -54,6 +57,13 @@ object Constants {
 
         const val SELECTED_AI_MODEL = "selected_ai_model"
         val keySelectedAiModel = stringPreferencesKey(SELECTED_AI_MODEL)
+
+        const val MAX_COMPLETION_TOKENS = "max_completion_tokens"
+        val keyMaxCompletionTokens = intPreferencesKey(MAX_COMPLETION_TOKENS)
+        const val MAX_COMPLETION_TOKENS_DEFAULT_VALUE = 400
+
+        const val UNIQUE_ID = "unique_id"
+        val keyUniqueId = stringPreferencesKey(UNIQUE_ID)
     }
 
     object Database {

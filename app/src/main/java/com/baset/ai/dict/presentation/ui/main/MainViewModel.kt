@@ -60,6 +60,9 @@ class MainViewModel(
                 (preferencesMap[Constants.PreferencesKey.keyUseAssistants] as? Boolean)
                     ?: Constants.PreferencesKey.USE_ASSISTANTS_DEFAULT_VALUE
             val defaultInstructions = resourcesProvider.getString(R.string.default_instructions)
+            val maxCompletionTokens =
+                (preferencesMap[Constants.PreferencesKey.keyMaxCompletionTokens] as? Int)
+                    ?: Constants.PreferencesKey.MAX_COMPLETION_TOKENS_DEFAULT_VALUE
             PreferencesUiState(
                 preferenceItems = persistentListOf(
                     PreferenceItem.OptionDialog(
@@ -131,6 +134,14 @@ class MainViewModel(
                         description = UiText.StringResource(R.string.description_request_timeout),
                         inputType = PreferenceItem.Input.InputType.Number,
                         text = requestTimeout.toString(),
+                        onInputPreferenceDone = ::onInputPreferenceDone
+                    ),
+                    PreferenceItem.Input(
+                        id = Constants.PreferencesKey.MAX_COMPLETION_TOKENS,
+                        title = UiText.StringResource(R.string.title_max_completion_tokens),
+                        description = UiText.StringResource(R.string.description_max_completion_tokens),
+                        inputType = PreferenceItem.Input.InputType.Number,
+                        text = maxCompletionTokens.toString(),
                         onInputPreferenceDone = ::onInputPreferenceDone
                     ),
                     PreferenceItem.Input(
@@ -270,6 +281,13 @@ class MainViewModel(
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyDefaultInstructions,
                         value
+                    )
+                }
+
+                Constants.PreferencesKey.MAX_COMPLETION_TOKENS -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyMaxCompletionTokens,
+                        value.toInt()
                     )
                 }
             }

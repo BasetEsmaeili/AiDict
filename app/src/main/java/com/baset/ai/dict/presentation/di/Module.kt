@@ -8,7 +8,9 @@ import com.baset.ai.dict.presentation.util.IntentResolver
 import com.baset.ai.dict.presentation.util.NetworkMonitor
 import com.baset.ai.dict.presentation.util.ResourceProvider
 import com.baset.ai.dict.presentation.util.UriConverter
+import com.baset.ai.dict.presentation.worker.UniqueIdGeneratorWorker
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.lazyModule
 
@@ -35,4 +37,5 @@ val presentationModule = lazyModule {
             get()
         )
     }
+    worker { UniqueIdGeneratorWorker(get(), get(), get()) }
 }

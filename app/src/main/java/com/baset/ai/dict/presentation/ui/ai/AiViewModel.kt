@@ -11,9 +11,14 @@ import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.assistant.Assistant
 import com.aallam.openai.api.assistant.AssistantId
 import com.aallam.openai.api.assistant.AssistantRequest
+import com.aallam.openai.api.chat.ChatCompletionRequest
+import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatResponseFormat
+import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
+import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
@@ -261,6 +266,10 @@ class AiViewModel(
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_check_network))
             return
         }
+        if (selectedAiModel.value.isEmpty()) {
+            messageEventChannel.trySend(resourceProvider.getString(R.string.error_select_an_ai_model))
+            return
+        }
         val openAI = openAIStateFlow.value ?: run {
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
             return
@@ -287,11 +296,11 @@ class AiViewModel(
             resourceProvider.getString(R.string.default_instructions)
         ).first()
         return buildString {
-            appendLine(resourceProvider.getString(R.string.answer_limit))
             if (!englishLevel.contentEquals(Constants.PreferencesKey.defaultEnglishLevel, true)) {
                 appendLine(resourceProvider.getString(R.string.language_preference, englishLevel))
             }
             appendLine(defaultInstructions)
+            appendLine(resourceProvider.getString(R.string.answer_limit))
         }
     }
 
@@ -313,6 +322,14 @@ class AiViewModel(
             Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
         ).first()
         val defaultInstructions: String = prepareDefaultInstructions()
+        val maxCompletionTokens = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyMaxCompletionTokens,
+            Constants.PreferencesKey.MAX_COMPLETION_TOKENS_DEFAULT_VALUE
+        ).first()
+        val uniqueId = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyUniqueId,
+            ""
+        ).first().ifEmpty { null }
         if (useAssistants) {
 //            val assistant =
 //                openAI.assistantOrCreate(
@@ -329,21 +346,30 @@ class AiViewModel(
 //            val thread = openAI.thread()
 //            openAI.message(thread.id)
         } else {
-//            openAI.chatCompletions(
-//                request = ChatCompletionRequest(
-//                    model = ModelId(),
-//                    messages =,
-//                    reasoningEffort =,
-//                    temperature = temperature,
-//                    topP = topP,
-//                    n = 1,
-//                    maxCompletionTokens =,
-//                    user =,
-//                    responseFormat = ChatResponseFormat.Text
-//                )
-//            ).collect {
-//
-//            }
+            val result = openAI.chatCompletion(
+                request = ChatCompletionRequest(
+                    model = ModelId(selectedAiModel.value),
+                    messages = listOf(
+                        ChatMessage(
+                            role = ChatRole.System,
+                            content = defaultInstructions
+                        ),
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = commandTextState.text.toString()
+                        )
+                    ),
+                    temperature = temperature,
+                    topP = topP,
+                    maxCompletionTokens = maxCompletionTokens,
+                    n = Constants.ONE,
+                    user = uniqueId,
+                    responseFormat = ChatResponseFormat.Text
+                )
+            )
+            result.choices.firstOrNull()?.let { choice ->
+                typeAnswer(choice.message.content.orEmpty())
+            }
         }
         uiModeState.value = UiMode.Answer
     }
