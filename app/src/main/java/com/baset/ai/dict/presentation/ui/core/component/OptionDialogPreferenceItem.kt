@@ -50,14 +50,14 @@ fun OptionPreference(
     options: ImmutableList<OptionItem>,
     onOptionItemSelected: (selectedItem: OptionItem) -> Unit
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     var showOptions by remember { mutableStateOf(false) }
     if (showOptions) {
         SelectOptionDialog(
             modifier = Modifier
                 .padding(margin16)
                 .fillMaxWidth()
-                .height(screenWidth / 2),
+                .height(screenHeight / 2),
             options = options,
             onDismissRequest = { showOptions = false },
             onOptionItemSelected = onOptionItemSelected

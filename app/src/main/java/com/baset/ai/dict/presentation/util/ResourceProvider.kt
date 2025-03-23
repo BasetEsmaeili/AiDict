@@ -15,6 +15,10 @@ class ResourceProvider(private val context: Context) {
         return context.resources.getString(stringRes)
     }
 
+    fun getString(@StringRes stringRes: Int, vararg formatArgs: Any): String {
+        return context.resources.getString(stringRes, formatArgs)
+    }
+
     fun getColor(@ColorRes colorRes: Int): Int {
         return context.extractColor(colorRes)
     }

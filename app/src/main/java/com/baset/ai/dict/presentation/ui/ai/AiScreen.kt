@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +52,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,8 +81,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.baset.ai.dict.R
+import com.baset.ai.dict.common.Constants
 import com.baset.ai.dict.presentation.ui.ai.model.PickedMedia
 import com.baset.ai.dict.presentation.ui.ai.model.UiMode
+import com.baset.ai.dict.presentation.ui.core.component.RadioOptionDialog
 import com.baset.ai.dict.presentation.ui.core.modifier.animatedGradient
 import com.baset.ai.dict.presentation.ui.core.modifier.conditional
 import com.baset.ai.dict.presentation.ui.core.theme.AskBorderRadius
@@ -102,12 +107,17 @@ import com.baset.ai.dict.presentation.ui.core.theme.margin16
 import com.baset.ai.dict.presentation.ui.core.theme.margin4
 import com.baset.ai.dict.presentation.ui.core.theme.margin8
 import com.baset.ai.dict.presentation.ui.core.theme.pickedMediaRadius
+import com.baset.ai.dict.presentation.ui.main.PreferenceItem
 import com.baset.ai.dict.presentation.util.LifecycleAwareSpeechRecognizer
 import com.baset.ai.dict.presentation.util.randomStringUUID
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.BasicRichTextEditor
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun AiRoute(
@@ -184,6 +194,8 @@ fun AiRoute(
         pickedMedia = uiState.pickedMedia,
         isSpeechToTextSupported = isTextToSpeechSupported,
         onOutSideClicked = onOutSideClicked,
+        commandOptions = uiState.commandOptions,
+        commandOptionsEnabled = uiState.commandOptionsEnabled,
         uiMode = uiState.uiMode,
         onAskCriteriaClicked = remember(viewModel) { viewModel::onAskCriteriaClicked },
         onMakeFulScreenClicked = remember(viewModel) { viewModel::onMakeFulScreenClicked },
@@ -218,6 +230,8 @@ private fun AiScreen(
     answerState: RichTextState,
     pickedMedia: PickedMedia?,
     isSpeechToTextSupported: Boolean,
+    commandOptions: ImmutableList<PreferenceItem>,
+    commandOptionsEnabled: Boolean,
     uiMode: UiMode,
     onOutSideClicked: () -> Unit,
     onAskCriteriaClicked: () -> Unit,
@@ -269,6 +283,8 @@ private fun AiScreen(
             answerState = answerState,
             pickedMedia = pickedMedia,
             isSpeechToTextSupported = isSpeechToTextSupported,
+            commandOptions = commandOptions,
+            commandOptionsEnabled = commandOptionsEnabled,
             uiMode = uiMode,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onRemovePickedMediaClicked = onRemovePickedMediaClicked,
@@ -293,6 +309,8 @@ private fun AskAiCard(
     answerState: RichTextState,
     pickedMedia: PickedMedia?,
     isSpeechToTextSupported: Boolean,
+    commandOptions: ImmutableList<PreferenceItem>,
+    commandOptionsEnabled: Boolean,
     uiMode: UiMode,
     onMakeFulScreenClicked: () -> Unit,
     onRemovePickedMediaClicked: () -> Unit,
@@ -325,6 +343,8 @@ private fun AskAiCard(
             commandTextState = commandTextState,
             pickedMedia = pickedMedia,
             isSpeechToTextSupported = isSpeechToTextSupported,
+            commandOptions = commandOptions,
+            commandOptionsEnabled = commandOptionsEnabled,
             onMakeFulScreenClicked = onMakeFulScreenClicked,
             onRemovePickedMediaClicked = onRemovePickedMediaClicked,
             onTextToSpeechClicked = onTextToSpeechClicked,
@@ -684,6 +704,8 @@ private fun AskMode(
     commandTextState: TextFieldState,
     pickedMedia: PickedMedia?,
     isSpeechToTextSupported: Boolean,
+    commandOptions: ImmutableList<PreferenceItem>,
+    commandOptionsEnabled: Boolean,
     onMakeFulScreenClicked: () -> Unit,
     onRemovePickedMediaClicked: () -> Unit,
     onTextToSpeechClicked: () -> Unit,
@@ -721,6 +743,9 @@ private fun AskMode(
                     height = Dimension.wrapContent
                 },
             headlineTitle = headlineTitle,
+            commandOptions = commandOptions,
+            commandOptionsVisible = true,
+            commandOptionsEnabled = commandOptionsEnabled,
             onMakeFulScreenClicked = onMakeFulScreenClicked
         )
         Spacer(
@@ -747,14 +772,15 @@ private fun AskMode(
                 pickedMedia = pickedMedia,
                 onRemovePickedMediaClicked = onRemovePickedMediaClicked
             )
-            Spacer(modifier = Modifier
-                .constrainAs(secondSpacer) {
-                    top.linkTo(pickedMediaRef.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.value(margin16)
-                })
+            Spacer(
+                modifier = Modifier
+                    .constrainAs(secondSpacer) {
+                        top.linkTo(pickedMediaRef.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.value(margin16)
+                    })
         }
         val focusRequester = remember { FocusRequester() }
         val softwareKeyboard = LocalSoftwareKeyboardController.current
@@ -985,7 +1011,10 @@ private fun CommandInput(
 private fun HeaderSection(
     modifier: Modifier = Modifier,
     headlineTitle: String,
-    onMakeFulScreenClicked: () -> Unit
+    onMakeFulScreenClicked: () -> Unit,
+    commandOptions: ImmutableList<PreferenceItem> = persistentListOf(),
+    commandOptionsVisible: Boolean = false,
+    commandOptionsEnabled: Boolean = false
 ) {
     Row(
         modifier = modifier,
@@ -1006,6 +1035,42 @@ private fun HeaderSection(
             style = Typography.titleSmall,
             textAlign = TextAlign.Start
         )
+        if (commandOptionsVisible) {
+            var showOptionDialog by remember {
+                mutableStateOf(false)
+            }
+            IconButton(
+                modifier = Modifier.size(appLogoSizeForAskAi),
+                enabled = commandOptionsEnabled,
+                onClick = {
+                    showOptionDialog = true
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.content_description_command_options)
+                )
+            }
+            if (showOptionDialog) {
+                val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+                val coroutineScale = rememberCoroutineScope()
+                RadioOptionDialog(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(screenHeight / 2),
+                    options = commandOptions,
+                    onPreferenceItemClicked = {
+                        coroutineScale.launch {
+                            delay(Constants.DIALOG_DISMISS)
+                            showOptionDialog = false
+                        }
+                    }
+                ) {
+                    showOptionDialog = false
+                }
+            }
+        }
+        Spacer(modifier = Modifier.size(margin12))
         IconButton(
             modifier = Modifier.size(appLogoSizeForAskAi),
             onClick = onMakeFulScreenClicked
@@ -1091,6 +1156,8 @@ private fun AiScreenPreview() {
         answerState = rememberRichTextState(),
         pickedMedia = null,
         isSpeechToTextSupported = false,
+        commandOptions = persistentListOf(),
+        commandOptionsEnabled = true,
         uiMode = UiMode.Ask,
         onMakeFulScreenClicked = {},
         onRemovePickedMediaClicked = {},

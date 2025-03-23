@@ -97,4 +97,9 @@ Detailed feedback on exercises.
 Goal:
 Efficient, structured, and engaging responses while minimizing token usage.
     </string>
+    <string name="language_preference">
+        My language level is: %s.\nOptimize the answers for this level.
+    </string>
+    <string name="answer_limit">Do not answer any topic except English questions.</string>
+    <string name="content_description_command_options">Command options.</string>
 </resources>

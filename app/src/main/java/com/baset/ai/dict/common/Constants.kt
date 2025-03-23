@@ -9,6 +9,7 @@ import com.baset.ai.dict.common.Constants.DefaultContent.hosts
 
 object Constants {
     const val FLOW_TIMEOUT = 5000L
+    const val DIALOG_DISMISS = 150L
     const val SPACE = " "
 
     object PreferencesKey {
@@ -50,6 +51,9 @@ object Constants {
         const val USE_ASSISTANTS = "use_assistants"
         val keyUseAssistants = booleanPreferencesKey(USE_ASSISTANTS)
         const val USE_ASSISTANTS_DEFAULT_VALUE = true
+
+        const val SELECTED_AI_MODEL = "selected_ai_model"
+        val keySelectedAiModel = stringPreferencesKey(SELECTED_AI_MODEL)
     }
 
     object Database {
@@ -73,6 +77,7 @@ object Constants {
             DEEP_SEEK
         )
         const val DEEP_SEEK_BASE_URL = "https://api.deepseek.com"
+        const val ASSISTANT_NAME = "AiDict"
     }
 
     object Intent {

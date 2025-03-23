@@ -7,6 +7,10 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.assistant.Assistant
+import com.aallam.openai.api.assistant.AssistantId
+import com.aallam.openai.api.assistant.AssistantRequest
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
@@ -25,6 +29,7 @@ import com.baset.ai.dict.presentation.ui.ai.model.PickedMedia
 import com.baset.ai.dict.presentation.ui.ai.model.TextType
 import com.baset.ai.dict.presentation.ui.ai.model.UiMode
 import com.baset.ai.dict.presentation.ui.core.model.UiText
+import com.baset.ai.dict.presentation.ui.main.PreferenceItem
 import com.baset.ai.dict.presentation.util.ClipboardManager
 import com.baset.ai.dict.presentation.util.IntentResolver
 import com.baset.ai.dict.presentation.util.NetworkMonitor
@@ -34,20 +39,28 @@ import com.baset.ai.dict.presentation.util.isDaytime
 import com.mohamedrejeb.richeditor.model.RichTextState
 import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.engine.okhttp.OkHttpEngine
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(BetaOpenAI::class)
 class AiViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val resourceProvider: ResourceProvider,
@@ -67,6 +80,10 @@ class AiViewModel(
             }
         )
     )
+    private val exceptionHandler = CoroutineExceptionHandler { _, e ->
+        uiModeState.value = UiMode.Error
+        typeAnswer(e.localizedMessage.orEmpty().trim())
+    }
     private val commandTextState = TextFieldState()
     private val answerTextState = RichTextState()
 
@@ -90,19 +107,35 @@ class AiViewModel(
         SharingStarted.WhileSubscribed(Constants.FLOW_TIMEOUT),
         true
     )
+
+    private val commandOptionsStateFlow = MutableStateFlow(
+        Pair<Boolean, PersistentList<PreferenceItem>>(
+            false,
+            persistentListOf()
+        )
+    )
+
+    private val selectedAiModel =
+        preferenceRepository.getPreference(Constants.PreferencesKey.keySelectedAiModel, "")
+            .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
     val uiState =
         combine(
             pickedImageState,
             makeFullScreenState,
-            uiModeState
+            uiModeState,
+            commandOptionsStateFlow
         ) { pickedImage,
             makeFullScreenState,
-            uiMode ->
+            uiMode,
+            commandOptionsState ->
             UiState(
                 headlineTitle = headlineTitle,
                 commandTextState = commandTextState,
                 answerTextState = answerTextState,
                 pickedMedia = pickedImage,
+                commandOptionsEnabled = commandOptionsState.first,
+                commandOptions = commandOptionsState.second,
                 makeFullScreen = makeFullScreenState,
                 uiMode = uiMode
             )
@@ -113,7 +146,7 @@ class AiViewModel(
                 answerTextState = answerTextState
             )
         )
-    private val generativeModelState = preferenceRepository.getAllPreferences()
+    private val openAIStateFlow = preferenceRepository.getAllPreferences()
         .map { preferencesMap ->
             val apikey =
                 preferencesMap[Constants.PreferencesKey.keyApiKey]?.toString() ?: return@map null
@@ -145,11 +178,48 @@ class AiViewModel(
                 )
             )
         }.flowOn(Dispatchers.IO)
+        .filterNotNull()
+        .onEach {
+            loadAiModels(openAI = it)
+        }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             null
         )
+
+    private fun loadAiModels(openAI: OpenAI) {
+        viewModelScope.launch(exceptionHandler) {
+            val models = openAI.models().map { model ->
+                PreferenceItem.Radio(
+                    id = model.id.id,
+                    title = UiText.DynamicString(model.id.id),
+                    checked = model.id.id.contentEquals(selectedAiModel.value),
+                    onRadioCheckChange = this@AiViewModel::onAiModelSelected
+                )
+            }.toPersistentList()
+            commandOptionsStateFlow.value = Pair(models.isNotEmpty(), models)
+        }
+    }
+
+    private fun onAiModelSelected(item: PreferenceItem.Radio) {
+        viewModelScope.launch {
+            preferenceRepository.putPreference(Constants.PreferencesKey.keySelectedAiModel, item.id)
+        }
+        commandOptionsStateFlow.update { state ->
+            Pair(
+                state.first,
+                state
+                    .second
+                    .mutate { list ->
+                        for (index in list.indices) {
+                            list[index] =
+                                (list[index] as PreferenceItem.Radio).copy(checked = list[index].id == item.id)
+                        }
+                    }
+            )
+        }
+    }
 
     private fun getHostBasedOnSelectedService(host: String): OpenAIHost {
         return when (host) {
@@ -191,28 +261,99 @@ class AiViewModel(
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_check_network))
             return
         }
-        val generativeModel = generativeModelState.value ?: run {
+        val openAI = openAIStateFlow.value ?: run {
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
             return
         }
         uiModeState.value = UiMode.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             runCatching {
-                var attachedMediaByteArray: ByteArray? = null
-                pickedImageState.value?.let { pickedMedia ->
-                    attachedMediaByteArray = uriConverter.toByteArray(pickedMedia.pickedMedia)
-                }
-                val englishLevel = preferenceRepository.getPreference(
-                    Constants.PreferencesKey.keyEnglishLevel,
-                    Constants.PreferencesKey.defaultEnglishLevel
-                ).first()
-                uiModeState.value = UiMode.Answer
-                // typeAnswer(result.text.orEmpty().trim())
+                startConversation(openAI)
             }.onFailure {
                 uiModeState.value = UiMode.Error
                 typeAnswer(it.localizedMessage.orEmpty().trim())
             }
         }
+    }
+
+    private suspend fun prepareDefaultInstructions(): String {
+        val englishLevel = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyEnglishLevel,
+            Constants.PreferencesKey.defaultEnglishLevel
+        ).first()
+
+        val defaultInstructions = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyDefaultInstructions,
+            resourceProvider.getString(R.string.default_instructions)
+        ).first()
+        return buildString {
+            appendLine(resourceProvider.getString(R.string.answer_limit))
+            if (!englishLevel.contentEquals(Constants.PreferencesKey.defaultEnglishLevel, true)) {
+                appendLine(resourceProvider.getString(R.string.language_preference, englishLevel))
+            }
+            appendLine(defaultInstructions)
+        }
+    }
+
+    private suspend fun startConversation(openAI: OpenAI) {
+        var attachedMediaByteArray: ByteArray? = null
+        pickedImageState.value?.let { pickedMedia ->
+            attachedMediaByteArray = uriConverter.toByteArray(pickedMedia.pickedMedia)
+        }
+        val useAssistants = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyUseAssistants,
+            Constants.PreferencesKey.USE_ASSISTANTS_DEFAULT_VALUE
+        ).first()
+        val temperature = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyTemperature,
+            Constants.PreferencesKey.TEMPERATURE_DEFAULT_VALUE
+        ).first()
+        val topP = preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyTopP,
+            Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
+        ).first()
+        val defaultInstructions: String = prepareDefaultInstructions()
+        if (useAssistants) {
+//            val assistant =
+//                openAI.assistantOrCreate(
+//                    id = AssistantId(Constants.DefaultContent.ASSISTANT_NAME),
+//                    request = AssistantRequest(
+//                        model =,
+//                        name = Constants.DefaultContent.ASSISTANT_NAME,
+//                        instructions = defaultInstructions,
+//                        temperature = temperature,
+//                        topP = topP,
+//                        responseFormat = AssistantResponseFormat.TEXT
+//                    )
+//                )
+//            val thread = openAI.thread()
+//            openAI.message(thread.id)
+        } else {
+//            openAI.chatCompletions(
+//                request = ChatCompletionRequest(
+//                    model = ModelId(),
+//                    messages =,
+//                    reasoningEffort =,
+//                    temperature = temperature,
+//                    topP = topP,
+//                    n = 1,
+//                    maxCompletionTokens =,
+//                    user =,
+//                    responseFormat = ChatResponseFormat.Text
+//                )
+//            ).collect {
+//
+//            }
+        }
+        uiModeState.value = UiMode.Answer
+    }
+
+
+    private suspend fun OpenAI.assistantOrCreate(
+        id: AssistantId,
+        request: AssistantRequest
+    ): Assistant {
+        return assistant(id = id) ?: assistant(request)
     }
 
     private fun typeAnswer(text: String) {
@@ -261,7 +402,7 @@ class AiViewModel(
     }
 
     fun onSaveAsCardClicked() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             cardRepository.insertCard(
                 Card(
                     front = commandTextState.text.toString(),
@@ -287,6 +428,8 @@ class AiViewModel(
         val answerTextState: RichTextState,
         val pickedMedia: PickedMedia? = null,
         val makeFullScreen: Boolean = false,
+        val commandOptionsEnabled: Boolean = false,
+        val commandOptions: PersistentList<PreferenceItem> = persistentListOf(),
         val uiMode: UiMode = UiMode.Ask
     )
 }

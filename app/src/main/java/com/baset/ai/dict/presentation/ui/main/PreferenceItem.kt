@@ -45,6 +45,16 @@ sealed interface PreferenceItem {
             get() = "input"
     }
 
+    data class Radio(
+        override val id: String,
+        val checked: Boolean,
+        val title: UiText,
+        val onRadioCheckChange: (Radio) -> Unit
+    ) : PreferenceItem {
+        override val type: String
+            get() = "radio"
+    }
+
     data class CopyRight(
         override val id: String,
         val onOpenProjectOnGithubClicked: () -> Unit

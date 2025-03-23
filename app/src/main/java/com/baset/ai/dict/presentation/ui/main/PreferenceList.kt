@@ -27,6 +27,7 @@ import com.baset.ai.dict.R
 import com.baset.ai.dict.common.Constants
 import com.baset.ai.dict.presentation.ui.core.component.InputPreference
 import com.baset.ai.dict.presentation.ui.core.component.OptionPreference
+import com.baset.ai.dict.presentation.ui.core.component.RadioPreference
 import com.baset.ai.dict.presentation.ui.core.component.SwitchPreference
 import com.baset.ai.dict.presentation.ui.core.model.UiText
 import com.baset.ai.dict.presentation.ui.core.theme.margin12
@@ -38,14 +39,16 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun PreferencesList(
     modifier: Modifier = Modifier,
-    preferenceItems: ImmutableList<PreferenceItem>
+    preferenceItems: ImmutableList<PreferenceItem>,
+    onPreferenceItemClicked: ((PreferenceItem) -> Unit)? = null
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(margin12),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(preferenceItems,
+        itemsIndexed(
+            preferenceItems,
             key = { _, item -> item.id },
             contentType = { _, item -> item.type })
         { index, item ->
@@ -60,6 +63,7 @@ fun PreferencesList(
                         description = item.description?.asString().orEmpty(),
                         onCheckedChange = {
                             item.onPreferenceSwitchCheckChange(item)
+                            onPreferenceItemClicked?.invoke(item)
                         }
                     )
                 }
@@ -74,6 +78,7 @@ fun PreferencesList(
                         options = item.options,
                         onOptionItemSelected = {
                             item.onPreferenceOptionItemSelected(item, it)
+                            onPreferenceItemClicked?.invoke(item)
                         }
                     )
                 }
@@ -89,13 +94,17 @@ fun PreferencesList(
                         value = item.text,
                         onDone = {
                             item.onInputPreferenceDone(item, it)
+                            onPreferenceItemClicked?.invoke(item)
                         }
                     )
                 }
 
                 is PreferenceItem.CopyRight -> {
                     Spacer(modifier = Modifier.size(margin32))
-                    IconButton(onClick = item.onOpenProjectOnGithubClicked) {
+                    IconButton(onClick = {
+                        item.onOpenProjectOnGithubClicked()
+                        onPreferenceItemClicked?.invoke(item)
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_github_logo),
                             contentDescription = stringResource(R.string.content_description_github)
@@ -121,6 +130,20 @@ fun PreferencesList(
                             }
                         },
                         textAlign = TextAlign.Center
+                    )
+                }
+
+                is PreferenceItem.Radio -> {
+                    RadioPreference(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        checked = item.checked,
+                        title = item.title.asString(),
+                        onCheckedChange = {
+                            item.onRadioCheckChange(item)
+                            onPreferenceItemClicked?.invoke(item)
+                        }
                     )
                 }
             }
