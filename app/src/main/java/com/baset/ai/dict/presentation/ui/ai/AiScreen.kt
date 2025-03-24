@@ -942,7 +942,7 @@ private fun PickedMediaSection(
                 .matchParentSize()
                 .clip(RoundedCornerShape(pickedMediaRadius)),
             contentScale = ContentScale.Crop,
-            model = pickedMedia.pickedMedia,
+            model = pickedMedia.mediaUri,
             onSuccess = {
                 showCloseIcon = true
             },

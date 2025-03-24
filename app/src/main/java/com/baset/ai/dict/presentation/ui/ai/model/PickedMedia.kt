@@ -5,5 +5,5 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class PickedMedia(
-    val pickedMedia: Uri
+    val mediaUri: Uri
 )

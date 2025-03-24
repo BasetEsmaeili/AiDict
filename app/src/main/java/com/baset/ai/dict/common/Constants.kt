@@ -14,6 +14,7 @@ object Constants {
     const val DIALOG_DISMISS = 150L
     const val SPACE = " "
     const val UNDERLINE = "_"
+    const val IMAGE_BASE64_PREFIX = "data:image/png;base64,"
 
     object PreferencesKey {
         const val WINDOW_SERVICE_ID = "window_service_enabled"

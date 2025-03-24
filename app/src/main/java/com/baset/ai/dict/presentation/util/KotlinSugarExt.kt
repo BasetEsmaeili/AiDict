@@ -1,5 +1,8 @@
 package com.baset.ai.dict.presentation.util
 
+import android.util.Base64
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.UUID
@@ -15,7 +18,6 @@ fun isDaytime(timeZone: ZoneId = ZoneId.systemDefault()): Boolean {
 
 fun randomStringUUID() = UUID.randomUUID().toString()
 
-inline fun <T> Iterable<T>.firstOrDefault(default: T, predicate: (T) -> Boolean): T {
-    for (element in this) if (predicate(element)) return element
-    return default
+suspend fun ByteArray.toBase64(): String = withContext(Dispatchers.IO) {
+    return@withContext Base64.encodeToString(this@toBase64, Base64.NO_WRAP)
 }

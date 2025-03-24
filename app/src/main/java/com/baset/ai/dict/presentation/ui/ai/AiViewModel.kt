@@ -8,9 +8,9 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aallam.openai.api.chat.ChatCompletionRequest
-import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatResponseFormat
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.chat.chatMessage
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
@@ -37,6 +37,7 @@ import com.baset.ai.dict.presentation.util.NetworkMonitor
 import com.baset.ai.dict.presentation.util.ResourceProvider
 import com.baset.ai.dict.presentation.util.UriConverter
 import com.baset.ai.dict.presentation.util.isDaytime
+import com.baset.ai.dict.presentation.util.toBase64
 import com.mohamedrejeb.richeditor.model.RichTextState
 import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.engine.okhttp.OkHttpEngine
@@ -270,12 +271,12 @@ class AiViewModel(
             return
         }
         uiModeState.value = UiMode.Loading
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             runCatching {
                 startConversation(openAI)
             }.onFailure {
                 uiModeState.value = UiMode.Error
-                typeAnswer(it.localizedMessage.orEmpty().trim())
+                typeAnswer(it.message.orEmpty().trim())
             }
         }
     }
@@ -300,9 +301,9 @@ class AiViewModel(
     }
 
     private suspend fun startConversation(openAI: OpenAI) {
-        var attachedMediaByteArray: ByteArray? = null
+        var attachedMediaBase64: String? = null
         pickedImageState.value?.let { pickedMedia ->
-            attachedMediaByteArray = uriConverter.toByteArray(pickedMedia.pickedMedia)
+            attachedMediaBase64 = uriConverter.toByteArray(pickedMedia.mediaUri)?.toBase64()
         }
         val temperature = preferenceRepository.getPreference(
             Constants.PreferencesKey.keyTemperature,
@@ -324,16 +325,27 @@ class AiViewModel(
         val result = openAI.chatCompletion(
             request = ChatCompletionRequest(
                 model = ModelId(selectedAiModel.value),
-                messages = listOf(
-                    ChatMessage(
-                        role = ChatRole.System,
-                        content = defaultInstructions
-                    ),
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = commandTextState.text.toString()
+                messages = buildList {
+                    add(
+                        chatMessage {
+                            role = ChatRole.System
+                            content {
+                                text(defaultInstructions)
+                            }
+                        }
                     )
-                ),
+                    add(chatMessage {
+                        role = ChatRole.User
+                        content {
+                            with(commandTextState) {
+                                if (attachedMediaBase64 != null) {
+                                    image("${Constants.IMAGE_BASE64_PREFIX}$attachedMediaBase64")
+                                }
+                                text(text.toString())
+                            }
+                        }
+                    })
+                },
                 temperature = temperature,
                 topP = topP,
                 maxCompletionTokens = maxCompletionTokens,
