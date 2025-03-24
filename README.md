@@ -56,9 +56,9 @@ but is being transitioned to OpenAI and DeepSeek for better customization and ef
 
 ## 📸 Screenshots
 
-| Ask                 | Answer                    | Ask with Image                       | Answer with Image                          |
-|---------------------|---------------------------|--------------------------------------|--------------------------------------------|
-| ![Ask](art/ask.png) | ![Answer](art/answer.png) | ![Ask with image](art/ask_image.png) | ![Answer with image](art/answer_image.png) |
+| Ask                                  | Answer                                  | Ask with Image                             | Answer with Image                             |
+|--------------------------------------|-----------------------------------------|--------------------------------------------|-----------------------------------------------|
+| <img src="art/ask.png" width="200"/> | <img src="art/answer.png" width="200"/> | <img src="art/ask_image.png" width="200"/> | <img src="art/answer_image.png" width="200"/> |
 
 ## 🔮 Future Plans
 
