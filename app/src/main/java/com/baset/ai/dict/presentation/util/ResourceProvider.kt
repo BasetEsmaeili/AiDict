@@ -12,11 +12,11 @@ import androidx.annotation.StringRes
 class ResourceProvider(private val context: Context) {
 
     fun getString(@StringRes stringRes: Int): String {
-        return context.resources.getString(stringRes)
+        return context.getString(stringRes)
     }
 
     fun getString(@StringRes stringRes: Int, vararg formatArgs: Any): String {
-        return context.resources.getString(stringRes, formatArgs)
+        return context.getString(stringRes, *formatArgs)
     }
 
     fun getColor(@ColorRes colorRes: Int): Int {

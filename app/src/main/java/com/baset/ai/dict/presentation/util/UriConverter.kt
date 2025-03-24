@@ -8,8 +8,8 @@ import java.io.ByteArrayOutputStream
 
 class UriConverter(private val context: Context) {
     suspend fun toByteArray(uri: Uri) = withContext(Dispatchers.IO) {
-        return@withContext context.contentResolver.openInputStream(uri)?.use { stream ->
-            return@use try {
+        return@withContext kotlin.runCatching {
+            context.contentResolver.openInputStream(uri)?.use { stream ->
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 val buffer = ByteArray(1024)
                 var length: Int
@@ -17,9 +17,7 @@ class UriConverter(private val context: Context) {
                     byteArrayOutputStream.write(buffer, 0, length)
                 }
                 byteArrayOutputStream.toByteArray()
-            } catch (e: Exception) {
-                null
             }
-        }
+        }.getOrNull()
     }
 }
