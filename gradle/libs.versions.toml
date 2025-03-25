@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.1"
 appcompatVersion = "1.7.0"
 coilComposeVersion = "3.0.4"
 coreSplashscreen = "1.0.1"
