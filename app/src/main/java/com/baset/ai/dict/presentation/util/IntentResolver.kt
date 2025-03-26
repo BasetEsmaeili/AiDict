@@ -4,12 +4,13 @@ import android.app.SearchManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.baset.ai.dict.common.Constants
 
 class IntentResolver(private val context: Context) {
     fun googleResult(query: String): Boolean {
         return launchIntent {
+            action = Intent.ACTION_WEB_SEARCH
             putExtra(SearchManager.QUERY, query)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
@@ -20,6 +21,7 @@ class IntentResolver(private val context: Context) {
         textToShare: String
     ): Boolean {
         return launchChooserIntent(chooserTitle) {
+            action = Intent.ACTION_SEND
             type = Constants.Intent.PLAIN_TEXT
             putExtra(Intent.EXTRA_TEXT, textToShare)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -42,7 +44,7 @@ class IntentResolver(private val context: Context) {
     fun openProjectOnGithub() {
         launchIntent {
             action = Intent.ACTION_VIEW
-            data = Uri.parse(Constants.Intent.GITHUB_URI)
+            data = Constants.Intent.GITHUB_URI.toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
     }
