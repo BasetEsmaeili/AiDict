@@ -198,9 +198,7 @@ fun AiRoute(
         uiMode = uiState.uiMode,
         onAskCriteriaClicked = remember(viewModel) { viewModel::onAskCriteriaClicked },
         onMakeFulScreenClicked = remember(viewModel) { viewModel::onMakeFulScreenClicked },
-        onTextToSpeechClicked = {
-            lifecycleAwareSpeechRecognizer.startListening()
-        },
+        onTextToSpeechClicked = remember(viewModel) { viewModel::onTextToSpeechClicked },
         onOpenGalleryClicked = {
             pickMedia.launch(
                 PickVisualMediaRequest.Builder()

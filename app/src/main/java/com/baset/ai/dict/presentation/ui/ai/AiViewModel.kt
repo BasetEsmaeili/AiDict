@@ -426,6 +426,13 @@ class AiViewModel(
         uiModeState.value = UiMode.Ask
     }
 
+    fun onTextToSpeechClicked() {
+        /**
+         * Disable the speech to text until would be ready.
+         */
+        messageEventChannel.trySend(resourceProvider.getString(R.string.error_speech_to_text_not_ready))
+    }
+
     data class UiState(
         val headlineTitle: UiText,
         val commandTextState: TextFieldState,

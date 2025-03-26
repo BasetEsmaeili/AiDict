@@ -20,8 +20,12 @@ val Context.canDrawOverlays: Boolean
     get() = Settings.canDrawOverlays(this)
 
 val Context.isNecessaryPermissionsAvailable: Boolean
-    get() = (!isSdk33OrUp || isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS)) &&
+    get() = (!isSdk33OrUp || isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS))
+            /*
+            Disable the speech to text until would be ready.
+
             isPermissionGranted(Manifest.permission.RECORD_AUDIO)
+            */
 
 fun Context.isPermissionGranted(permission: String) = ContextCompat.checkSelfPermission(
     applicationContext,

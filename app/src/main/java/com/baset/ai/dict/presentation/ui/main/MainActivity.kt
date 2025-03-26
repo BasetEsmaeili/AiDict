@@ -43,8 +43,12 @@ class MainActivity : ComponentActivity() {
             }
             necessaryPermissionsResult.launch(
                 arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.POST_NOTIFICATIONS
+                    /*
+                    Disable the speech to text until would be ready.
+
                     Manifest.permission.RECORD_AUDIO
+                    */
                 )
             )
         }
@@ -74,8 +78,12 @@ class MainActivity : ComponentActivity() {
                 }
                 necessaryPermissionsResult.launch(
                     arrayOf(
-                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.POST_NOTIFICATIONS
+                        /*
+                        Disable the speech to text until would be ready.
+
                         Manifest.permission.RECORD_AUDIO
+                        * */
                     )
                 )
                 return
