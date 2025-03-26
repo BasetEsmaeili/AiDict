@@ -77,7 +77,7 @@ welcome. Feel free to explore, fork, and improve the repository!
 
 ## 📜 License
 
-This project is open-source under the [MIT + Non-Commercial](LICENSE).
+This project is [“Source-available, non-commercial license based on MIT.”](LICENSE).
 
 ## 🧾 Contributor License Agreement (CLA)
 
