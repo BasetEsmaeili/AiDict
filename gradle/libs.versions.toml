@@ -16,7 +16,7 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 ktorClientOkhttpVersion = "3.0.3"
 lifecycle_version = "2.9.0-alpha12"
 openaiClientBomVersion = "4.0.1"
-richeditorComposeVersion = "1.0.0-rc10"
+richeditorComposeVersion = "1.0.0-rc12"
 work_version = "2.10.0"
 activity_version = "1.10.1"
 fragment_version = "1.8.6"
@@ -30,11 +30,14 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroidxComposeVersion" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koinAndroidxComposeVersion" }
@@ -59,8 +62,8 @@ androidx-work-gcm = { module = "androidx.work:work-gcm", version.ref = "work_ver
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity_version" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment_version" }
 androidx-fragment-compose = { module = "androidx.fragment:fragment-compose", version.ref = "fragment_version" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room_version" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_version" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room_version" }
