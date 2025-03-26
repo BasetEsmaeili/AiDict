@@ -77,7 +77,15 @@ welcome. Feel free to explore, fork, and improve the repository!
 
 ## 📜 License
 
-This project is open-source under the [Apache-2.0 License](LICENSE).
+This project is open-source under the [MIT + Non-Commercial](LICENSE).
+
+## 🧾 Contributor License Agreement (CLA)
+
+By submitting code, ideas, or documentation to this repository, you agree that:
+
+- Your contributions are provided under the same license as this project (MIT + Non-Commercial).
+- You grant the project maintainer full rights to use, modify, and distribute your contributions as
+  part of the project, under the project’s existing license.
 
 ---
 
