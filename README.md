@@ -1,4 +1,4 @@
-<img src="art/ic_launcher.png" alt="app_icon"/>
+<p align="center"><img src="art/ic_launcher.png" alt="app_icon"/></p>
 
 # AiDict
 
@@ -40,7 +40,8 @@ personal need. **No one is allowed to use this project for commercial purposes.*
 - **Database**: Room DB (for temporary card storage)
 - **Preferences Management**: Data Store (for storing user settings and preferences)
 - **Design System**: Material 3 (for a modern and accessible UI)
-- **Rich Text Editing**: [Compose Rich Editor](https://github.com/MohamedRejeb/compose-rich-editor) (for advanced text
+- **Rich Text Editing
+  **: [Compose Rich Editor](https://github.com/MohamedRejeb/compose-rich-editor) (for advanced text
   input and formatting)
 - **Image Loading**: Coil (for efficient image handling)
 - **Dependency Injection**: Koin (for managing dependencies in a lightweight way)
