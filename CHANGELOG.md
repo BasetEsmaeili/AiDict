@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.3] - 2025-03-26
+### Fixed
+- Fix issue of ask questions.
+
 ## [v1.0.2] - 2025-03-26
 ### Fixed
 - Fix crash of application when the assistant opened.
