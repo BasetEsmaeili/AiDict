@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.4] - 2025-03-26
+### Removed
+- Speech to text feature is disabled for the time being.
+
 ## [v1.0.3] - 2025-03-26
 ### Fixed
 - Fix issue of ask questions.
