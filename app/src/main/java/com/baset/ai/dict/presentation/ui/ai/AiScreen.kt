@@ -75,7 +75,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -327,6 +326,55 @@ private fun AskAiCard(
     onSaveAsCardClicked: () -> Unit,
     onAskAnotherQuestionClicked: () -> Unit
 ) {
+    when (uiMode) {
+        is UiMode.Answer -> AnswerMode(
+            modifier = modifier,
+            answerState = answerState,
+            onMakeFulScreenClicked = onMakeFulScreenClicked,
+            onGoogleResultClicked = onGoogleResultClicked,
+            onShareTextClicked = onShareTextClicked,
+            onCopyTextClicked = onCopyTextClicked,
+            onCreateAnkiCardClicked = onCreateAnkiCardClicked,
+            onSaveAsCardClicked = onSaveAsCardClicked,
+            onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
+        )
+
+        is UiMode.Ask -> AskMode(
+            modifier = modifier,
+            headlineTitle = headlineTitle,
+            commandTextState = commandTextState,
+            pickedMedia = pickedMedia,
+            isSpeechToTextSupported = isSpeechToTextSupported,
+            commandOptions = commandOptions,
+            commandOptionsEnabled = commandOptionsEnabled,
+            onMakeFulScreenClicked = onMakeFulScreenClicked,
+            onRemovePickedMediaClicked = onRemovePickedMediaClicked,
+            onTextToSpeechClicked = onTextToSpeechClicked,
+            onOpenGalleryClicked = onOpenGalleryClicked,
+            onSendCommandClicked = onSendCommandClicked
+        )
+
+        is UiMode.Loading -> LoadingMode(
+            modifier = modifier,
+            onMakeFulScreenClicked = onMakeFulScreenClicked
+        )
+
+        is UiMode.Error -> ErrorMode(
+            modifier = modifier,
+            answerState = answerState,
+            onMakeFulScreenClicked = onMakeFulScreenClicked,
+            onTryAgainClicked = onSendCommandClicked
+        )
+    }
+}
+
+@Composable
+private fun ErrorMode(
+    modifier: Modifier,
+    answerState: RichTextState,
+    onMakeFulScreenClicked: () -> Unit,
+    onTryAgainClicked: () -> Unit
+) {
     ConstraintLayout(
         modifier = modifier
             .shadow(
@@ -339,123 +387,80 @@ private fun AskAiCard(
             )
             .padding(margin16)
     ) {
-        when (uiMode) {
-            is UiMode.Answer -> AnswerMode(
-                answerState = answerState,
-                onMakeFulScreenClicked = onMakeFulScreenClicked,
-                onGoogleResultClicked = onGoogleResultClicked,
-                onShareTextClicked = onShareTextClicked,
-                onCopyTextClicked = onCopyTextClicked,
-                onCreateAnkiCardClicked = onCreateAnkiCardClicked,
-                onSaveAsCardClicked = onSaveAsCardClicked,
-                onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
-            )
+        val (headerRef,
+            spacerRef,
+            answerInputRef,
+            bottomBarRef
+        ) = createRefs()
+        HeaderSection(
+            modifier = Modifier
+                .constrainAs(headerRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                },
+            headlineTitle = "",
+            onMakeFulScreenClicked = onMakeFulScreenClicked
+        )
 
-            is UiMode.Ask -> AskMode(
-                headlineTitle = headlineTitle,
-                commandTextState = commandTextState,
-                pickedMedia = pickedMedia,
-                isSpeechToTextSupported = isSpeechToTextSupported,
-                commandOptions = commandOptions,
-                commandOptionsEnabled = commandOptionsEnabled,
-                onMakeFulScreenClicked = onMakeFulScreenClicked,
-                onRemovePickedMediaClicked = onRemovePickedMediaClicked,
-                onTextToSpeechClicked = onTextToSpeechClicked,
-                onOpenGalleryClicked = onOpenGalleryClicked,
-                onSendCommandClicked = onSendCommandClicked
-            )
+        Spacer(
+            modifier = Modifier
+                .constrainAs(spacerRef) {
+                    top.linkTo(headerRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.value(margin16)
+                }
+        )
 
-            is UiMode.Loading -> LoadingMode(
-                onMakeFulScreenClicked = onMakeFulScreenClicked
-            )
+        AnswerText(
+            modifier = Modifier
+                .constrainAs(answerInputRef) {
+                    top.linkTo(spacerRef.bottom)
+                    width = Dimension.matchParent
+                    height = Dimension.wrapContent
+                },
+            state = answerState
+        )
 
-            is UiMode.Error -> ErrorMode(
-                answerState = answerState,
-                onMakeFulScreenClicked = onMakeFulScreenClicked,
-                onTryAgainClicked = onSendCommandClicked
+        val interactionSource = remember { MutableInteractionSource() }
+
+        Column(
+            modifier = Modifier
+                .constrainAs(bottomBarRef) {
+                    width = Dimension.wrapContent
+                    height = Dimension.wrapContent
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+                .clickable(
+                    onClick = onTryAgainClicked,
+                    indication = null,
+                    interactionSource = interactionSource
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.baseline_refresh_24),
+                contentDescription = stringResource(R.string.content_description_try_again)
+            )
+            Spacer(modifier = Modifier.size(margin4))
+            Text(
+                text = stringResource(R.string.content_description_try_again),
+                style = Typography.bodyMedium,
+                textAlign = TextAlign.Center
             )
         }
     }
 }
 
 @Composable
-private fun ConstraintLayoutScope.ErrorMode(
-    answerState: RichTextState,
-    onMakeFulScreenClicked: () -> Unit,
-    onTryAgainClicked: () -> Unit
-) {
-    val (headerRef,
-        spacerRef,
-        answerInputRef,
-        bottomBarRef
-    ) = createRefs()
-    HeaderSection(
-        modifier = Modifier
-            .constrainAs(headerRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.wrapContent
-            },
-        headlineTitle = "",
-        onMakeFulScreenClicked = onMakeFulScreenClicked
-    )
-
-    Spacer(
-        modifier = Modifier
-            .constrainAs(spacerRef) {
-                top.linkTo(headerRef.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.value(margin16)
-            }
-    )
-
-    AnswerText(
-        modifier = Modifier
-            .constrainAs(answerInputRef) {
-                top.linkTo(spacerRef.bottom)
-                width = Dimension.matchParent
-                height = Dimension.wrapContent
-            },
-        state = answerState
-    )
-
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Column(
-        modifier = Modifier
-            .constrainAs(bottomBarRef) {
-                width = Dimension.wrapContent
-                height = Dimension.wrapContent
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            }
-            .clickable(
-                onClick = onTryAgainClicked,
-                indication = null,
-                interactionSource = interactionSource
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(R.drawable.baseline_refresh_24),
-            contentDescription = stringResource(R.string.content_description_try_again)
-        )
-        Spacer(modifier = Modifier.size(margin4))
-        Text(
-            text = stringResource(R.string.content_description_try_again),
-            style = Typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun ConstraintLayoutScope.AnswerMode(
+private fun AnswerMode(
+    modifier: Modifier,
     answerState: RichTextState,
     onMakeFulScreenClicked: () -> Unit,
     onGoogleResultClicked: () -> Unit,
@@ -465,78 +470,91 @@ private fun ConstraintLayoutScope.AnswerMode(
     onSaveAsCardClicked: () -> Unit,
     onAskAnotherQuestionClicked: () -> Unit
 ) {
-    val (headerRef,
-        spacerRef,
-        answerColumnRef,
-        bottomBarRef
-    ) = createRefs()
-    HeaderSection(
-        modifier = Modifier
-            .constrainAs(headerRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.wrapContent
-            },
-        headlineTitle = "",
-        onMakeFulScreenClicked = onMakeFulScreenClicked
-    )
-
-    Spacer(
-        modifier = Modifier
-            .constrainAs(spacerRef) {
-                top.linkTo(headerRef.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.value(margin16)
-            }
-    )
-
-    LazyColumn(modifier = Modifier.constrainAs(answerColumnRef) {
-        top.linkTo(spacerRef.bottom)
-        start.linkTo(parent.start)
-        end.linkTo(parent.end)
-        bottom.linkTo(bottomBarRef.top, margin12)
-        width = Dimension.fillToConstraints
-        height = Dimension.fillToConstraints
-    }) {
-        item {
-            AnswerText(
-                modifier = Modifier.fillMaxWidth(),
-                state = answerState
+    ConstraintLayout(
+        modifier = modifier
+            .shadow(
+                elevation = askAiCardElevation,
+                shape = RoundedCornerShape(askAiCardRadius)
             )
-        }
-        item {
-            Spacer(modifier = Modifier.size(margin12))
-        }
-        item {
-            AnswerOptions(
-                modifier = Modifier.fillMaxWidth(),
-                onGoogleResultClicked = onGoogleResultClicked,
-                onShareTextClicked = onShareTextClicked,
-                onCopyTextClicked = onCopyTextClicked,
-                onCreateAnkiCardClicked = onCreateAnkiCardClicked,
-                onSaveAsCardClicked = onSaveAsCardClicked
+            .background(
+                color = MaterialTheme.colorScheme.background,
+                shape = RoundedCornerShape(askAiCardRadius)
             )
-        }
+            .padding(margin16)
+    ) {
+        val (headerRef,
+            spacerRef,
+            answerColumnRef,
+            bottomBarRef
+        ) = createRefs()
+        HeaderSection(
+            modifier = Modifier
+                .constrainAs(headerRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                },
+            headlineTitle = "",
+            onMakeFulScreenClicked = onMakeFulScreenClicked
+        )
 
-        item {
-            Spacer(modifier = Modifier.size(margin12))
-        }
-    }
+        Spacer(
+            modifier = Modifier
+                .constrainAs(spacerRef) {
+                    top.linkTo(headerRef.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.value(margin16)
+                }
+        )
 
-    AskAiBottomBar(
-        modifier = Modifier.constrainAs(bottomBarRef) {
-            width = Dimension.matchParent
-            height = Dimension.wrapContent
+        LazyColumn(modifier = Modifier.constrainAs(answerColumnRef) {
+            top.linkTo(spacerRef.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
-            bottom.linkTo(parent.bottom)
-        },
-        onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
-    )
+            bottom.linkTo(bottomBarRef.top, margin12)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
+        }) {
+            item {
+                AnswerText(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = answerState
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.size(margin12))
+            }
+            item {
+                AnswerOptions(
+                    modifier = Modifier.fillMaxWidth(),
+                    onGoogleResultClicked = onGoogleResultClicked,
+                    onShareTextClicked = onShareTextClicked,
+                    onCopyTextClicked = onCopyTextClicked,
+                    onCreateAnkiCardClicked = onCreateAnkiCardClicked,
+                    onSaveAsCardClicked = onSaveAsCardClicked
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.size(margin12))
+            }
+        }
+
+        AskAiBottomBar(
+            modifier = Modifier.constrainAs(bottomBarRef) {
+                width = Dimension.matchParent
+                height = Dimension.wrapContent
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+            },
+            onAskAnotherQuestionClicked = onAskAnotherQuestionClicked
+        )
+    }
 }
 
 @NonRestartableComposable
@@ -681,7 +699,8 @@ private fun AnswerOptions(
 }
 
 @Composable
-private fun ConstraintLayoutScope.AskMode(
+private fun AskMode(
+    modifier: Modifier,
     headlineTitle: String,
     commandTextState: TextFieldState,
     pickedMedia: PickedMedia?,
@@ -694,194 +713,221 @@ private fun ConstraintLayoutScope.AskMode(
     onOpenGalleryClicked: () -> Unit,
     onSendCommandClicked: () -> Unit
 ) {
-    val (headerRef,
-        spacerRef,
-        pickedMediaRef,
-        secondSpacer,
-        commandInputRef,
-        bottomBarRef
-    ) = createRefs()
-    HeaderSection(
-        modifier = Modifier
-            .constrainAs(headerRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.wrapContent
-            },
-        headlineTitle = headlineTitle,
-        commandOptions = commandOptions,
-        commandOptionsVisible = true,
-        commandOptionsEnabled = commandOptionsEnabled,
-        onMakeFulScreenClicked = onMakeFulScreenClicked
-    )
-    Spacer(
-        modifier = Modifier
-            .constrainAs(spacerRef) {
-                top.linkTo(headerRef.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.value(margin16)
-            }
-    )
-    if (pickedMedia != null) {
-        PickedMediaSection(
+    ConstraintLayout(
+        modifier = modifier
+            .shadow(
+                elevation = askAiCardElevation,
+                shape = RoundedCornerShape(askAiCardRadius)
+            )
+            .background(
+                color = MaterialTheme.colorScheme.background,
+                shape = RoundedCornerShape(askAiCardRadius)
+            )
+            .padding(margin16)
+    ) {
+        val (headerRef,
+            spacerRef,
+            pickedMediaRef,
+            secondSpacer,
+            commandInputRef,
+            bottomBarRef
+        ) = createRefs()
+        HeaderSection(
             modifier = Modifier
-                .constrainAs(pickedMediaRef) {
-                    top.linkTo(spacerRef.bottom)
+                .constrainAs(headerRef) {
+                    top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(secondSpacer.top)
                     width = Dimension.fillToConstraints
-                    height = Dimension.ratio("1:.4")
+                    height = Dimension.wrapContent
                 },
-            pickedMedia = pickedMedia,
-            onRemovePickedMediaClicked = onRemovePickedMediaClicked
+            headlineTitle = headlineTitle,
+            commandOptions = commandOptions,
+            commandOptionsVisible = true,
+            commandOptionsEnabled = commandOptionsEnabled,
+            onMakeFulScreenClicked = onMakeFulScreenClicked
         )
         Spacer(
             modifier = Modifier
-                .constrainAs(secondSpacer) {
-                    top.linkTo(pickedMediaRef.bottom)
+                .constrainAs(spacerRef) {
+                    top.linkTo(headerRef.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                     height = Dimension.value(margin16)
-                })
-    }
-    val focusRequester = remember { FocusRequester() }
-    val softwareKeyboard = LocalSoftwareKeyboardController.current
-    var requestId by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(focusRequester, requestId) {
-        if (requestId != null) {
+                }
+        )
+        if (pickedMedia != null) {
+            PickedMediaSection(
+                modifier = Modifier
+                    .constrainAs(pickedMediaRef) {
+                        top.linkTo(spacerRef.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(secondSpacer.top)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.ratio("1:.4")
+                    },
+                pickedMedia = pickedMedia,
+                onRemovePickedMediaClicked = onRemovePickedMediaClicked
+            )
+            Spacer(
+                modifier = Modifier
+                    .constrainAs(secondSpacer) {
+                        top.linkTo(pickedMediaRef.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.value(margin16)
+                    })
+        }
+        val focusRequester = remember { FocusRequester() }
+        val softwareKeyboard = LocalSoftwareKeyboardController.current
+        var requestId by remember { mutableStateOf<String?>(null) }
+        LaunchedEffect(focusRequester, requestId) {
+            if (requestId != null) {
+                awaitFrame()
+                focusRequester.requestFocus()
+                softwareKeyboard?.show()
+            }
+        }
+        LaunchedEffect(Unit) {
             awaitFrame()
-            focusRequester.requestFocus()
-            softwareKeyboard?.show()
-        }
-    }
-    LaunchedEffect(Unit) {
-        awaitFrame()
-        requestId = randomStringUUID()
-    }
-    val isSendEnabled by remember {
-        derivedStateOf { commandTextState.text.isNotEmpty() }
-    }
-    CommandInput(
-        modifier = Modifier
-            .focusRequester(focusRequester)
-            .constrainAs(commandInputRef) {
-                top.linkTo(
-                    if (pickedMedia == null) {
-                        spacerRef
-                    } else {
-                        secondSpacer
-                    }.bottom
-                )
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(bottomBarRef.top)
-                width = Dimension.fillToConstraints
-                height = Dimension.fillToConstraints
-            }
-            .imePadding(),
-        commandTextState = commandTextState,
-        onKeyboardActionClicked = {
-            if (isSendEnabled) {
-                onSendCommandClicked()
-            }
-        }
-    )
-    BottomBarTools(
-        modifier = Modifier
-            .constrainAs(bottomBarRef) {
-                width = Dimension.matchParent
-                height = Dimension.wrapContent
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            },
-        disabled = false,
-        isSendEnabled = isSendEnabled,
-        isSpeechToTextSupported = isSpeechToTextSupported,
-        onSendCommandClicked = onSendCommandClicked,
-        onOpenKeyboardClicked = {
             requestId = randomStringUUID()
-        },
-        onTextToSpeechClicked = onTextToSpeechClicked,
-        onOpenGalleryClicked = onOpenGalleryClicked
-    )
+        }
+        val isSendEnabled by remember {
+            derivedStateOf { commandTextState.text.isNotEmpty() }
+        }
+        CommandInput(
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .constrainAs(commandInputRef) {
+                    top.linkTo(
+                        if (pickedMedia == null) {
+                            spacerRef
+                        } else {
+                            secondSpacer
+                        }.bottom
+                    )
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(bottomBarRef.top)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                }
+                .imePadding(),
+            commandTextState = commandTextState,
+            onKeyboardActionClicked = {
+                if (isSendEnabled) {
+                    onSendCommandClicked()
+                }
+            }
+        )
+        BottomBarTools(
+            modifier = Modifier
+                .constrainAs(bottomBarRef) {
+                    width = Dimension.matchParent
+                    height = Dimension.wrapContent
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                },
+            disabled = false,
+            isSendEnabled = isSendEnabled,
+            isSpeechToTextSupported = isSpeechToTextSupported,
+            onSendCommandClicked = onSendCommandClicked,
+            onOpenKeyboardClicked = {
+                requestId = randomStringUUID()
+            },
+            onTextToSpeechClicked = onTextToSpeechClicked,
+            onOpenGalleryClicked = onOpenGalleryClicked
+        )
+    }
 }
 
 @Composable
-private fun ConstraintLayoutScope.LoadingMode(
+private fun LoadingMode(
+    modifier: Modifier,
     onMakeFulScreenClicked: () -> Unit
 ) {
-    val (headerRef, loading1, loading2, loading3, bottomBarRef) = createRefs()
-    HeaderSection(
-        modifier = Modifier
-            .constrainAs(headerRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-                height = Dimension.wrapContent
-            },
-        headlineTitle = "",
-        onMakeFulScreenClicked = onMakeFulScreenClicked
-    )
-    Box(
-        modifier = Modifier
-            .constrainAs(loading1) {
-                width = Dimension.matchParent
-                height = Dimension.value(gradientLoadingHeight)
-                top.linkTo(headerRef.bottom, margin16)
-            }
-            .animatedGradient(
-                primaryColor = GradientLoadingBackground,
-                containerColor = Purple80,
-                cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
+    ConstraintLayout(
+        modifier = modifier
+            .shadow(
+                elevation = askAiCardElevation,
+                shape = RoundedCornerShape(askAiCardRadius)
             )
-    )
+            .background(
+                color = MaterialTheme.colorScheme.background,
+                shape = RoundedCornerShape(askAiCardRadius)
+            )
+            .padding(margin16)
+    ) {
+        val (headerRef, loading1, loading2, loading3, bottomBarRef) = createRefs()
+        HeaderSection(
+            modifier = Modifier
+                .constrainAs(headerRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                    height = Dimension.wrapContent
+                },
+            headlineTitle = "",
+            onMakeFulScreenClicked = onMakeFulScreenClicked
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(loading1) {
+                    width = Dimension.matchParent
+                    height = Dimension.value(gradientLoadingHeight)
+                    top.linkTo(headerRef.bottom, margin16)
+                }
+                .animatedGradient(
+                    primaryColor = GradientLoadingBackground,
+                    containerColor = Purple80,
+                    cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
+                )
+        )
 
-    Box(
-        modifier = Modifier
-            .constrainAs(loading2) {
-                width = Dimension.matchParent
-                height = Dimension.value(gradientLoadingHeight)
-                top.linkTo(loading1.bottom, margin16)
-            }
-            .animatedGradient(
-                primaryColor = GradientLoadingBackground,
-                containerColor = Purple80,
-                cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
-            )
-    )
-    Box(
-        modifier = Modifier
-            .constrainAs(loading3) {
-                width = Dimension.percent(.7f)
-                height = Dimension.value(gradientLoadingHeight)
-                top.linkTo(loading2.bottom, margin16)
-            }
-            .animatedGradient(
-                primaryColor = GradientLoadingBackground,
-                containerColor = Purple80,
-                cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
-            )
-    )
+        Box(
+            modifier = Modifier
+                .constrainAs(loading2) {
+                    width = Dimension.matchParent
+                    height = Dimension.value(gradientLoadingHeight)
+                    top.linkTo(loading1.bottom, margin16)
+                }
+                .animatedGradient(
+                    primaryColor = GradientLoadingBackground,
+                    containerColor = Purple80,
+                    cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
+                )
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(loading3) {
+                    width = Dimension.percent(.7f)
+                    height = Dimension.value(gradientLoadingHeight)
+                    top.linkTo(loading2.bottom, margin16)
+                }
+                .animatedGradient(
+                    primaryColor = GradientLoadingBackground,
+                    containerColor = Purple80,
+                    cornerRadius = CornerRadius(gradientLoadingCornerRadius.value)
+                )
+        )
 
-    BottomBarTools(
-        modifier = Modifier
-            .constrainAs(bottomBarRef) {
-                width = Dimension.matchParent
-                height = Dimension.wrapContent
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            },
-        disabled = true
-    )
+        BottomBarTools(
+            modifier = Modifier
+                .constrainAs(bottomBarRef) {
+                    width = Dimension.matchParent
+                    height = Dimension.wrapContent
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                },
+            disabled = true
+        )
+    }
 }
 
 @Composable
