@@ -761,6 +761,7 @@ private fun ConstraintLayoutScope.AskMode(
         }
     }
     LaunchedEffect(Unit) {
+        awaitFrame()
         requestId = randomStringUUID()
     }
     val isSendEnabled by remember {
