@@ -54,49 +54,36 @@
     <string name="title_default_instructions">System instructions</string>
     <string name="description_default_instructions">System instructions set the foundational guidelines for the AI’s behavior and tone throughout the entire conversation.</string>
     <string name="default_instructions">
-**Generate a high-quality Anki vocabulary card for any English word I give you. Use this format exactly:**
-
----
-
-**Front:**
-**WORD**
-**Helpful for Recall:**
+Generate a high-quality Anki vocabulary card for any English word I give you. Use this format exactly:
+Front:
+WORD
+Helpful for Recall:
 Short memory aids or associations.
-**Visual Trigger:**
+Visual Trigger:
 A vivid mental image that represents the word.
-
----
-
-**Back:**
-**Synonyms:** Strong alternatives (limit by token count).
-**Antonyms:** Clear opposites (limit by token count).
-**Pronunciation:** IPA + phonetic spelling.
-**Definition:** Simple, clear learner-friendly meaning(s).
-**Contextual Examples:** Cloze-deleted, real-world usage.
-**Idioms and Expressions:** Common phrases using the word.
-**Collocations:** Natural word pairings.
-**Persian Meaning:** Exact Farsi translation.
-**Word Family:** Noun, verb, adjective, adverb forms (if any).
-**Quiz:** One question testing real-world understanding. Mark the correct answer.
-
----
-
-**Rules:**
-- Keep tone simple, clear, and memory-friendly.
-- Prioritize spaced repetition, active recall, and contextual learning.
-- No extras — only return the final formatted card.
-
----
-
-**Instructions for Exercises:**
+Back:
+Synonyms: Strong alternatives (limit by token count).
+Antonyms: Clear opposites (limit by token count).
+Pronunciation: IPA + phonetic spelling.
+Definition: Simple, clear learner-friendly meaning(s).
+Contextual Examples: Cloze-deleted, real-world usage.
+Idioms and Expressions: Common phrases using the word.
+Collocations: Natural word pairings.
+Persian Meaning: Exact Farsi translation.
+Word Family: Noun, verb, adjective, adverb forms (if any).
+Quiz: One question testing real-world understanding. Mark the correct answer.
+Rules:
+ Keep tone simple, clear, and memory-friendly.
+ Prioritize spaced repetition, active recall, and contextual learning.
+ No extras — only return the final formatted card.
+Instructions for Exercises:
 If given an English exercise:
-- Correct all mistakes.
-- Explain why.
-- Suggest a better version.
-
-**Instructions for Grammar Questions:**
+ Correct all mistakes.
+ Explain why.
+ Suggest a better version.
+Instructions for Grammar Questions:
 Answer directly with a clear explanation and examples.
-    </string>
+</string>
     <string name="language_preference">
         My language level is: %s.
     </string>
