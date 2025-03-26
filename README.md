@@ -5,6 +5,13 @@ comprehensive word and phrase explanations instantly. Unlike traditional diction
 searching multiple sources manually, AiDict consolidates relevant information automatically and
 integrates seamlessly into your workflow.
 
+## 📦 Download
+
+Click the button below to download the latest version of the app:
+
+[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen?style=for-the-badge&logo=android)](https://github.com/BasetEsmaeili/AiDict/releases/latest/download/app-release.apk)
+
+
 ## 🚀 Why AiDict?
 
 While AI chatbots can provide detailed word explanations, they require switching contexts, manual
