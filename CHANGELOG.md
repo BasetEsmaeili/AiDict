@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.5] - 2025-03-26
+### Added
+- Update icon of app.
+
 ## [v1.0.4] - 2025-03-26
 ### Removed
 - Speech to text feature is disabled for the time being.
