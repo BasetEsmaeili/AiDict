@@ -56,7 +56,9 @@ class MainViewModel(
                 ?: Constants.PreferencesKey.TOP_P_DEFAULT_VALUE
             val host = (preferencesMap[Constants.PreferencesKey.keyHost] as? String)
                 ?: Constants.PreferencesKey.defaultHost
-            val defaultInstructions = resourcesProvider.getString(R.string.default_instructions)
+            val defaultInstructions =
+                (preferencesMap[Constants.PreferencesKey.keyDefaultInstructions] as? String)
+                    ?: resourcesProvider.getString(R.string.default_instructions)
             val maxCompletionTokens =
                 (preferencesMap[Constants.PreferencesKey.keyMaxCompletionTokens] as? Int)
                     ?: Constants.PreferencesKey.MAX_COMPLETION_TOKENS_DEFAULT_VALUE
