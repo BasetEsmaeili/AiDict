@@ -27,9 +27,9 @@ import com.baset.ai.dict.domain.CardRepository
 import com.baset.ai.dict.domain.PreferenceRepository
 import com.baset.ai.dict.domain.entity.Card
 import com.baset.ai.dict.presentation.ui.ai.model.PickedMedia
-import com.baset.ai.dict.presentation.ui.ai.model.TextType
 import com.baset.ai.dict.presentation.ui.ai.model.UiMode
 import com.baset.ai.dict.presentation.ui.core.model.UiText
+import com.baset.ai.dict.presentation.ui.main.ExportType
 import com.baset.ai.dict.presentation.ui.main.PreferenceItem
 import com.baset.ai.dict.presentation.util.ClipboardManager
 import com.baset.ai.dict.presentation.util.IntentResolver
@@ -119,6 +119,14 @@ class AiViewModel(
     private val selectedAiModel =
         preferenceRepository.getPreference(Constants.PreferencesKey.keySelectedAiModel, "")
             .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    private val exportType =
+        preferenceRepository.getPreference(
+            Constants.PreferencesKey.keyExportType,
+            ExportType.entries.first().name
+        ).map { storedValue ->
+            ExportType.entries.first { it.name.contentEquals(storedValue, true) }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, ExportType.entries.first())
 
     val uiState =
         combine(
@@ -364,13 +372,13 @@ class AiViewModel(
         answerTextState.setMarkdown(text)
     }
 
-    private fun textToShare(textType: TextType): String {
+    private fun textToShare(exportType: ExportType): String {
         val selection = answerTextState.selection
         val isTextSelected = selection.start != selection.end
-        val text = when (textType) {
-            TextType.HTML -> answerTextState.toHtml()
-            TextType.MARKDOWN -> answerTextState.toMarkdown()
-            TextType.PLAIN -> answerTextState.toText()
+        val text = when (exportType) {
+            ExportType.HTML -> answerTextState.toHtml()
+            ExportType.MARKDOWN -> answerTextState.toMarkdown()
+            ExportType.PLAIN -> answerTextState.toText()
         }
         return if (isTextSelected) {
             text.substring(selection.start, selection.end)
@@ -380,28 +388,34 @@ class AiViewModel(
     }
 
     fun onGoogleResultClicked() {
-        intentResolver.googleResult(textToShare(TextType.PLAIN))
+        intentResolver.googleResult(textToShare(ExportType.PLAIN))
     }
 
     fun onShareTextClicked() {
         intentResolver.shareText(
             resourceProvider.getString(R.string.title_share_via),
-            textToShare(TextType.PLAIN)
+            textToShare(exportType.value)
         )
     }
 
     fun onCopyTextClicked() {
         clipboardManager.copyFormattedTextToClipboard(
             label = resourceProvider.getString(R.string.app_name),
-            plainTextToCopy = textToShare(TextType.PLAIN),
-            htmlTextToCopy = textToShare(TextType.HTML)
+            plainTextToCopy = textToShare(
+                if (exportType.value == ExportType.HTML) {
+                    ExportType.PLAIN
+                } else {
+                    exportType.value
+                }
+            ),
+            htmlTextToCopy = textToShare(ExportType.HTML)
         )
     }
 
     fun onCreateAnkiCardClicked() {
         intentResolver.createAnkiCard(
             commandTextState.text.toString(),
-            textToShare(TextType.HTML)
+            textToShare(exportType.value)
         )
     }
 

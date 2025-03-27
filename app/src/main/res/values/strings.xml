@@ -93,4 +93,6 @@ Answer directly with a clear explanation and examples.
     <string name="title_max_completion_tokens">Max completion tokens</string>
     <string name="description_max_completion_tokens">An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and reasoning tokens.</string>
     <string name="error_speech_to_text_not_ready">The speech to text feature is being developed.</string>
+    <string name="title_export_type">Export type</string>
+    <string name="description_exportType">Export to anki or copy the result type</string>
 </resources>

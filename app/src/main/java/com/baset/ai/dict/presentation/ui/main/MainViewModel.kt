@@ -60,6 +60,9 @@ class MainViewModel(
             val maxCompletionTokens =
                 (preferencesMap[Constants.PreferencesKey.keyMaxCompletionTokens] as? Int)
                     ?: Constants.PreferencesKey.MAX_COMPLETION_TOKENS_DEFAULT_VALUE
+            val exportType =
+                (preferencesMap[Constants.PreferencesKey.keyExportType] as? String)
+                    ?: ExportType.entries.first().name
             PreferencesUiState(
                 preferenceItems = persistentListOf(
                     PreferenceItem.OptionDialog(
@@ -81,6 +84,19 @@ class MainViewModel(
                         title = UiText.StringResource(R.string.title_delete_after_share_to_anki),
                         description = UiText.StringResource(R.string.description_delete_after_share_to_anki),
                         onPreferenceSwitchCheckChange = ::onPreferenceSwitchCheckChange
+                    ),
+                    PreferenceItem.OptionDialog(
+                        id = Constants.PreferencesKey.EXPORT_TYPE,
+                        title = UiText.StringResource(R.string.title_export_type),
+                        description = UiText.StringResource(R.string.description_exportType),
+                        options = ExportType.entries.map {
+                            OptionItem(
+                                id = Constants.PreferencesKey.EXPORT_TYPE,
+                                selected = it.name.contentEquals(exportType, true),
+                                text = it.name
+                            )
+                        }.toImmutableList(),
+                        onPreferenceOptionItemSelected = ::onPreferenceOptionItemSelected
                     ),
                     PreferenceItem.Switch(
                         id = Constants.PreferencesKey.WINDOW_SERVICE_ID,
@@ -218,6 +234,13 @@ class MainViewModel(
                 Constants.PreferencesKey.HOST -> {
                     preferenceRepository.putPreference(
                         Constants.PreferencesKey.keyHost,
+                        optionItem.text
+                    )
+                }
+
+                Constants.PreferencesKey.EXPORT_TYPE -> {
+                    preferenceRepository.putPreference(
+                        Constants.PreferencesKey.keyExportType,
                         optionItem.text
                     )
                 }

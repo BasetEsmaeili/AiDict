@@ -61,6 +61,9 @@ object Constants {
 
         const val UNIQUE_ID = "unique_id"
         val keyUniqueId = stringPreferencesKey(UNIQUE_ID)
+
+        const val EXPORT_TYPE = "export_type"
+        val keyExportType = stringPreferencesKey(EXPORT_TYPE)
     }
 
     object Database {
