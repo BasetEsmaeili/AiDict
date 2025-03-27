@@ -69,6 +69,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.EmojiSupportMatch
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -984,7 +986,11 @@ private fun CommandInput(
     BasicTextField(
         modifier = modifier,
         state = commandTextState,
-        textStyle = Typography.bodyLarge,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            platformStyle = PlatformTextStyle(
+                emojiSupportMatch = EmojiSupportMatch.All
+            )
+        ),
         decorator = { innerTextField ->
             Box(contentAlignment = Alignment.TopStart) {
                 if (commandTextState.text.isEmpty()) {
@@ -1153,7 +1159,11 @@ fun AnswerText(
         modifier = modifier,
         state = state,
         readOnly = true,
-        textStyle = MaterialTheme.typography.bodyMedium
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            platformStyle = PlatformTextStyle(
+                emojiSupportMatch = EmojiSupportMatch.All
+            )
+        )
     )
 }
 
