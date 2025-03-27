@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.0.7] - 2025-03-27
+### Fixed
+- Fix issue of show default instructions in preferences.
+
 ## [v1.0.6] - 2025-03-27
 ### Added
 - Add emoji support.
