@@ -77,6 +77,7 @@ but is being transitioned to OpenAI and DeepSeek for better customization and ef
 - 🎤 **Implement speech-to-text service**
 - 🔊 **Read answers aloud for better pronunciation learning**
 - 🔍 **Add AI search feature to the home screen**
+- 📸 **Add something like circle to search**
 
 ## 🤝 Contribution
 
