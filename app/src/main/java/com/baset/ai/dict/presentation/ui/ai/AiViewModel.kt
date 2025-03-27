@@ -266,16 +266,16 @@ class AiViewModel(
     }
 
     fun onSendCommandClicked() {
+        val openAI = openAIStateFlow.value ?: run {
+            messageEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
+            return
+        }
         if (networkState.value != NetworkMonitor.State.Available) {
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_check_network))
             return
         }
         if (selectedAiModel.value.isEmpty()) {
             messageEventChannel.trySend(resourceProvider.getString(R.string.error_select_an_ai_model))
-            return
-        }
-        val openAI = openAIStateFlow.value ?: run {
-            messageEventChannel.trySend(resourceProvider.getString(R.string.error_model_config))
             return
         }
         uiModeState.value = UiMode.Loading

@@ -26,7 +26,7 @@
     <string name="title_api_key">Api key</string>
     <string name="description_api_key">Your OpenAI or DeepSeek developer console api key.</string>
     <string name="label_submit">Submit</string>
-    <string name="error_model_config">Error in configurations, please make them correct.</string>
+    <string name="error_model_config">Error in model configurations, please make them correct.</string>
     <string name="content_description_try_again">Try again</string>
     <string name="content_description_google_result">Google result or part of it.</string>
     <string name="content_description_share_result">Share result or part of it.</string>
