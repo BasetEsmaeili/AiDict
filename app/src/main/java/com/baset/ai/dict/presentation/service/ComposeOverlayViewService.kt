@@ -24,7 +24,6 @@ import kotlin.math.roundToInt
 
 /**
  * Service that is ready to display compose overlay view
- * @author Kishan
  */
 abstract class ComposeOverlayViewService : ViewReadyService() {
 

@@ -32,7 +32,8 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun AiDictTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Disable dark mode until the dark mode infrastructure is ready.
+    darkTheme: Boolean = false,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

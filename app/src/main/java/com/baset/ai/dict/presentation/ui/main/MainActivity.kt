@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                 arrayOf(
                     Manifest.permission.POST_NOTIFICATIONS
                     /*
-                    Disable the speech to text until would be ready.
+                    Disable the speech to text until is ready.
 
                     Manifest.permission.RECORD_AUDIO
                     */
@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
                     arrayOf(
                         Manifest.permission.POST_NOTIFICATIONS
                         /*
-                        Disable the speech to text until would be ready.
+                        Disable the speech to text until is ready.
 
                         Manifest.permission.RECORD_AUDIO
                         * */

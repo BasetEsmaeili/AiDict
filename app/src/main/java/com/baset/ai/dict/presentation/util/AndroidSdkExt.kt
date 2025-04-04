@@ -22,7 +22,7 @@ val Context.canDrawOverlays: Boolean
 val Context.isNecessaryPermissionsAvailable: Boolean
     get() = (!isSdk33OrUp || isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS))
             /*
-            Disable the speech to text until would be ready.
+            Disable the speech to text until is ready.
 
             isPermissionGranted(Manifest.permission.RECORD_AUDIO)
             */

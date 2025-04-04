@@ -442,7 +442,7 @@ class AiViewModel(
 
     fun onTextToSpeechClicked() {
         /**
-         * Disable the speech to text until would be ready.
+         * Disable the speech to text until is ready.
          */
         messageEventChannel.trySend(resourceProvider.getString(R.string.error_speech_to_text_not_ready))
     }

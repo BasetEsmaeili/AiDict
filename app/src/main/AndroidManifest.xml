@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!-- Disable the speech to text until would be ready.
+    <!-- Disable the speech to text until is ready.
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     -->
 
