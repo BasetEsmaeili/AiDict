@@ -14,8 +14,8 @@ android {
         applicationId = "com.baset.ai.dict"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 9
+        versionName = "v1.0.9"
     }
 
     signingConfigs {
